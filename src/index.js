@@ -6,15 +6,18 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from "react-router-dom";
 import {AuthContextProvider} from './context/AuthContext'
 import {DoctorContextProvider} from './context/DoctorContext'
+import { ModalContextProvider } from "./context/ModalContext";
 
 ReactDOM.render(
   <React.StrictMode>
      <Router>
+    <ModalContextProvider>
     <AuthContextProvider>
     <DoctorContextProvider>
     <App />
     </DoctorContextProvider>
     </AuthContextProvider>
+    </ModalContextProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

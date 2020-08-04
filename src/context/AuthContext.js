@@ -24,6 +24,8 @@ const AuthContextProvider = (props) => {
     phone:"",
     password: "",
     confirmPassword: "",
+    hospital:'',
+    location:''
   });
 
   const [userDetails,setUserDetails]=useState({})
@@ -84,23 +86,18 @@ const AuthContextProvider = (props) => {
   const signup = async () => {
     setLoading(true);
     try {
-      setNewUser({ loading: true });
+   
       let register_resp = await (await api_srv).register(
         newUser.firstName,
         newUser.lastName,
         newUser.email,
         newUser.phone,
-        newUser.password
+        newUser.password,
+        newUser.hospital,
+        newUser.location
+
       );
-console.log("register",register_resp)
-      setNewUser({
-        email: "",
-        firstName: "",
-        lastName: "",
-        password: "",
-        phone: "",
-        confirmPassword: "",
-      });
+ 
       setLoading(false);
       history.push('/login')
     } catch (err) {
@@ -112,6 +109,8 @@ console.log("register",register_resp)
         password: "",
         phone:"",
         confirmPassword: "",
+        location:'',
+        hospital:""
       });
       let error = await err;
       console.log(error.message);

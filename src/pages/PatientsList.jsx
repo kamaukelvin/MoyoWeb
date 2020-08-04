@@ -22,16 +22,18 @@ const PatientsList = () => {
       <div className="grid-container bg-white">
        {/* TOP SECTION START */}
        <section className="top-section">
+         <Link to="/dashboard">
           <div className="logo">
             <div className="row">
               <div className="col-md-4">
                 <img src={logo} alt="logo" />
               </div>
               <div className="col-md-8">
-                <h5>Moyoweb</h5>
+                <h5 className="text-dark">Moyoweb</h5>
               </div>
             </div>
           </div>
+          </Link>
           <div>
             <img className="top-img pl-4" src={pic} alt="logo" />
             <h6>Dr {doctorInfo.name}</h6>
@@ -99,7 +101,7 @@ const PatientsList = () => {
           </div>
         </div>
       </div>
-      <footer className="footer">
+      <footer className="footer mt-0 bg-white text-dark">
         <div>Email : naekuj@students.uonbi.ac.ke</div>
         <div>Tel : +245 718 592 124</div>
         <div>Copyright 2020</div>

@@ -1,46 +1,28 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect } from "react";
 import { DoctorContext } from "../context/DoctorContext";
-import { ModalContext } from "../context/ModalContext";
 import coder from "../assets/images/coder.jpg";
 import { Link } from "react-router-dom";
-import AddPatient from '../components/modals/AddPatient'
 
-export default function Dashboard(props) {
+export default function Dashboard() {
   const context = useContext(DoctorContext);
-  const modalContext = useContext(ModalContext);
-  const { fetchPatients, patients, doctorInfo,fetchIndividualDoc } = context;
+  const { fetchPatientRequests, patientRequests, accept,doctorInfo,fetchIndividualDoc } = context;
   
-  const { setModalShow, modalShow, modalClose } = modalContext;
-  const refModal = useRef();
- 
+
+  console.log("doc details", doctorInfo)
 const token= sessionStorage.getItem("token")
   useEffect(() => {
     async function initialize() {
       await fetchIndividualDoc()
-      await fetchPatients();
+      await fetchPatientRequests();
     }
     initialize();
   }, []);
-
-  console.log("patients list",patients)
-  const handle_view_record = async (id) => {
- 
-    try {
-      //  await view_quotation(id)
-      props.history.push(`/patient/${id}`);
-    } catch (err) {
-      console.log(err);
-    }
-
-  };
-
-  
 
   return (
     <div className="dash-grid-container bg-white">
       <header className="dash-header">
         <div className="dash-brand">
-          <Link className="text-dark" to="/dashboard">Moyoweb</Link>
+          <a href="index.html">Moyoweb</a>
         </div>
         <div className="dash-header-links">
           <i className="fa fa-bars" aria-hidden="true" />
@@ -61,6 +43,9 @@ const token= sessionStorage.getItem("token")
               <br />
               <br />
               <li>
+                <Link to="/patients">My Patient Lists</Link>
+              </li>
+              <li>
                 <Link>Settings</Link>
               </li>
               <li>
@@ -78,71 +63,54 @@ const token= sessionStorage.getItem("token")
         <div className="col-sm-9">
         <div className="profile ml-5 mt-3">
         <div className="chip-1">
-          <h4 className="font-weight-bold mb-5">Patient List</h4>
-          <img src={coder} alt="Person" width={96} height={96} />
-          <h6>Dr {doctorInfo.name}</h6>
+          <p className>Patient List</p>
+          <img src="img/profile.png" alt="Person" width={96} height={96} />
+          <h6>Dr Who</h6>
           <h6>MD Cardiologist M.E.H</h6>
         
         </div>
-       < AddPatient 
-           show={modalShow}
-           onHide={modalClose}
-           refModal={refModal}/>
-           
-              <button
-              onClick={() => setModalShow(true)} 
-            type="button" className="btn btn-light float-right btn-t mr-3" style={{marginTop: '-40px'}}><i> Add Patient</i></button>
-     
-            <div className="container table-responsive mt-5">
-            <table className="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">First Name</th>
-            <th scope="col">Last Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        {patients.map((record)=>{
-          return(
-            <tr>
-            <th scope="row">1</th>
-            <td>{record.first_name}</td>
-            <td>{record.last_name}</td>
-            <td>{record.email}</td>
-            <td>{record.phonenumber}</td>
-            <td>             
-              <button 
-              onClick={()=>handle_view_record(record.patient_id)}
-              type="button" className="btn btn-light mr-3 ml-auto"><i> Records</i></button></td>
-          </tr>
-          )
-        })}
-       
   
-        </tbody>
-      </table>
-            {/* <table className="table table-hover">
+            <a href="Dashboard-2.html" style={{textDecoration: 'none'}}><button type="button" className="btn btn-light float-right btn-t mr-3" style={{marginTop: '-40px'}}><i> Add Patient</i></button>
+      </a>
+            <div className="container">
+            <table className="table table-hover">
         <thead>
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td />
             <td />
+            {/* <td></td> */}
             <td>
-              <button type="button" className="btn btn-light mr-3 ml-auto"><i> Records</i></button>
+              <button type="button" className="btn btn-light mr-3"><i> Records</i></button>
             </td></tr>
-    
+          <tr>
+            <td />
+            <td />
+            {/* <td></td> */}
+            <td>
+              <button type="button" className="btn btn-light mr-3"><i> Records</i></button> 
+            </td></tr> 
+          <tr>
+            <td />
+            <td />
+            {/* <td></td> */}
+            <td>
+              <button type="button" className="btn btn-light mr-3"><i> Records</i></button> 
+            </td></tr>
+          <tr>
+            <td />
+            <td />
+            {/* <td></td> */}
+            <td>
+              <button type="button" className="btn btn-light mr-3"><i> Records</i></button>
+            </td></tr>
         </tbody>
-      </table> */}
+      </table>
             </div>
           </div>
         </div>

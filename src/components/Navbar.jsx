@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <header className="header">
       <div className="brand">
-        <a href="index.html">Moyoweb</a>
+      <Link className="text-dark" to="/dashboard">Moyoweb</Link>
       </div>
       <div className="header-links">
         <Link to="/">Sign Up</Link>

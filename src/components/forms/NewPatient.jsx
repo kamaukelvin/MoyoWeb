@@ -1,45 +1,16 @@
-import React, { useContext } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import React,{useContext} from 'react'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
-export default function Signup() {
-  const context = useContext(AuthContext);
-  const { newUser, handleChange, signup, loading } = context;
-
-  return (
-    <div className="grid-container">
-      <Navbar />
-      <main className="main">
-        <div className="content">
-          <div className="container">
-            <div className="row">
-              <div className="col-md-5 px-md-4">
-                <h3 className="text-center text-white mt-md-5 pt-md-5 pb-md-5">
-                  <u>Moyoweb</u>
-                </h3>
-                <p className="text-white">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed,
-                  pariatur. Recusandae eius consequuntur minus at. Ipsum
-                  obcaecati, et quod cupiditate maxime vitae nulla doloremque
-                  veniam consequatur est sint non consectetur.
-                </p>
-                <br />
-                <br />
-                <p className="text-white">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed,
-                  pariatur. Recusandae eius consequuntur minus at. Ipsum
-                  obcaecati, et quod cupiditate maxime vitae nulla doloremque
-                  veniam consequatur est sint non consectetur.
-                </p>
-              </div>
-              <div className="col-md-7">
-                <Formik
+import {DoctorContext} from '../../context/DoctorContext'
+const NewPatient = () => {
+    const context = useContext(DoctorContext)
+    const {newPatient, handlePatientChange,loading,createPatient}= context
+    
+    return (
+        <div>
+   <Formik
                   enableReinitialize
-                  initialValues={newUser}
+                  initialValues={newPatient}
                   validationSchema={Yup.object().shape({
                     firstName: Yup.string().required("First Name is required"),
                     lastName: Yup.string().required("Last Name is required"),
@@ -48,34 +19,31 @@ export default function Signup() {
                       .required("Email is required"),
                     phone: Yup.string()
                       .required("Phone is required"),
-                    hospital: Yup.string()
-                      .required("Hospital name is required"),
-                    location: Yup.string()
-                      .required("Location is required"),
-                    password: Yup.string()
-                      .min(6, "Password must be atleast 6 characters")
-                      .required("Password is required"),
-                    confirmPassword: Yup.string()
-                      .oneOf([Yup.ref("password")], "Passwords do not match")
-                      .required("Confirm password is required"),
+                    weight: Yup.string()
+                      .required("Weight is required"),
+                    height: Yup.string()
+                      .required("Height is required"),
+                    bpReadings: Yup.string()
+                      .required("Bp Readings are required"),
+                    id: Yup.number()
+                      .required("ID Number is required"),
+                    heart_rate: Yup.number()
+                      .required("Heart rate is required")
                   })}
-                  onSubmit={() => signup()}
+                  onSubmit={() => createPatient(newPatient)}
                 >
                   {({ errors, status, touched }) => (
-                    <Form className="ms-form">
-                      <div className="card-body px-md-5">
-                        <h3 className="text-center pb-3">
-                          <u>Create Account</u>
-                        </h3>
+                    <Form className="">
+                      <div className="card-body">
                         <div className="form-row">
                           <div className="form-group col-md-6">
                             <label htmlFor="First Name">First Name</label>
                             <Field
                               name="firstName"
                               type="text"
-                              value={newUser.firstName}
+                              value={newPatient.firstName}
                               placeholder="Jane"
-                              onChange={handleChange}
+                              onChange={handlePatientChange}
                               className={
                                 "form-control border" +
                                 (errors.firstName && touched.firstName
@@ -94,9 +62,9 @@ export default function Signup() {
                             <Field
                               name="lastName"
                               type="text"
-                              value={newUser.lastName}
+                              value={newPatient.lastName}
                               placeholder="Doe"
-                              onChange={handleChange}
+                              onChange={handlePatientChange}
                               className={
                                 "form-control border" +
                                 (errors.lastName && touched.lastName
@@ -116,8 +84,8 @@ export default function Signup() {
                           <Field
                             name="email"
                             type="text"
-                            value={newUser.email}
-                            onChange={handleChange}
+                            value={newPatient.email}
+                            onChange={handlePatientChange}
                             className={
                               "form-control border" +
                               (errors.email && touched.email
@@ -136,8 +104,8 @@ export default function Signup() {
                           <Field
                             name="phone"
                             type="text"
-                            value={newUser.phone}
-                            onChange={handleChange}
+                            value={newPatient.phone}
+                            onChange={handlePatientChange}
                             className={
                               "form-control border" +
                               (errors.phone && touched.phone
@@ -152,92 +120,110 @@ export default function Signup() {
                           />
                         </div>
                         <div className="form-group">
-                          <label htmlFor="phone">Hospital Name</label>
+                          <label htmlFor="phone">ID Number</label>
                           <Field
-                            name="hospital"
+                            name="id"
                             type="text"
-                            value={newUser.hospital}
-                            onChange={handleChange}
+                            value={newPatient.id}
+                            onChange={handlePatientChange}
                             className={
                               "form-control border" +
-                              (errors.hospital && touched.hospital
+                              (errors.id && touched.id
                                 ? " is-invalid"
                                 : "")
                             }
                           />
                           <ErrorMessage
-                            name="hospital"
+                            name="id"
                             component="div"
                             className="invalid-feedback pl-2"
                           />
                         </div>
-                        <div className="form-group">
-                          <label htmlFor="location">Location</label>
+                        <div className="form-row">
+                        <div className="form-group col-md-6">
+                          <label htmlFor="weight">Weight</label>
                           <Field
-                            name="location"
+                            name="weight"
                             type="text"
-                            value={newUser.location}
-                            onChange={handleChange}
+                            value={newPatient.weight}
+                            onChange={handlePatientChange}
                             className={
                               "form-control border" +
-                              (errors.location && touched.location
+                              (errors.weight && touched.weight
                                 ? " is-invalid"
                                 : "")
                             }
                           />
                           <ErrorMessage
-                            name="location"
+                            name="weight"
                             component="div"
                             className="invalid-feedback pl-2"
                           />
                         </div>
-                     
-                        <div className="form-group">
-                          <label htmlFor="password">Password</label>
-                          <input
-                            type="password"
-                            name="password"
-                            value={newUser.password}
-                            onChange={handleChange}
-                            className={
-                              "form-control border password-input" +
-                              (errors.password && touched.password
-                                ? " is-invalid"
-                                : "")
-                            }
-                            id="Password"
-                            placeholder="********"
-                          />
-                          <ErrorMessage
-                            name="password"
-                            component="div"
-                            className="invalid-feedback"
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label htmlFor="confirmPassword">
-                            Confirm Password
-                          </label>
-                          <input
-                            name="confirmPassword"
-                            value={newUser.confirmPassword}
-                            onChange={handleChange}
-                            type="password"
+                        <div className="form-group col-md-6">
+                          <label htmlFor="height">Height</label>
+                          <Field
+                            name="height"
+                            type="text"
+                            value={newPatient.height}
+                            onChange={handlePatientChange}
                             className={
                               "form-control border" +
-                              (errors.confirmPassword && touched.confirmPassword
+                              (errors.height && touched.height
                                 ? " is-invalid"
                                 : "")
                             }
-                            id="confirmPassword"
-                            placeholder="*********"
                           />
                           <ErrorMessage
-                            name="confirmPassword"
+                            name="height"
                             component="div"
-                            className="invalid-feedback"
+                            className="invalid-feedback pl-2"
+                          />
+                        
+                        </div>
+                        <div className="form-group col-md-6">
+                          <label htmlFor="weight">Systolic_diastolic</label>
+                          <Field
+                            name="bpReadings"
+                            type="text"
+                            value={newPatient.bpReadings}
+                            onChange={handlePatientChange}
+                            className={
+                              "form-control border" +
+                              (errors.bpReadings && touched.bpReadings
+                                ? " is-invalid"
+                                : "")
+                            }
+                          />
+                          <ErrorMessage
+                            name="bpReadings"
+                            component="div"
+                            className="invalid-feedback pl-2"
                           />
                         </div>
+                        <div className="form-group col-md-6">
+                          <label htmlFor="heart_rate">Heart Rate</label>
+                          <Field
+                            name="heart_rate"
+                            type="text"
+                            value={newPatient.heart_rate}
+                            onChange={handlePatientChange}
+                            className={
+                              "form-control border" +
+                              (errors.heart_rate && touched.heart_rate
+                                ? " is-invalid"
+                                : "")
+                            }
+                          />
+                          <ErrorMessage
+                            name="heart_rate"
+                            component="div"
+                            className="invalid-feedback pl-2"
+                          />
+                        </div>
+                        </div>
+                    
+                    
                         <p className="text-center">
                           <button
                             type="submit"
@@ -252,31 +238,25 @@ export default function Signup() {
                             )}
                             {loading && (
                               <span className="text-capitalize">
-                                Creating User...
+                                Creating Patient...
                               </span>
                             )}
 
                             {!loading && (
                               <span className="text-capitalize">
                                 {" "}
-                                Create Account
+                                Create Patient
                               </span>
                             )}
                           </button>
                         </p>
-                        <p className="text-center">
-                          Already have an account <Link to="/login">Login</Link>
-                        </p>
+                      
                       </div>
                     </Form>
                   )}
                 </Formik>
-              </div>
-            </div>
-          </div>
         </div>
-      </main>
-      <Footer />
-    </div>
-  );
+    )
 }
+
+export default NewPatient

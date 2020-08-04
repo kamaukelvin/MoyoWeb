@@ -8,30 +8,59 @@ const DoctorContextProvider = (props) => {
   
 // states
 
-  const [patientRequests, setPatientRequests]= useState([])
+  const [patients, setPatients]= useState([])
   const [doctorInfo, setDoctorInfo] = useState({})
   const [loading, setLoading] = useState(false);
+  const [newPatient, setNewPatient]=useState({
+    firstName:'',
+    lastName:'',
+    email:'',
+    phone:'',
+    weight:'',
+    bpReadings:'',
+    id:'',
+    heart_rate:''
+
+  })
+  const [prescription, setPrescription]=useState({
+    name:'',
+    dosage:'',
+    weight:'',
+    height:'',
+    duration:'',
+  
+
+  })
+  const [patientData, setPatientData]= useState({})
 
 
 // handle Input Changes
-  // function handleChange(evt) {
-  //   const value = 
-  //     evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
-  //   setNewUser({
-  //     ...newUser,
-  //     [evt.target.name]: value,
-  //   });
-  // }
+  function handlePatientChange(evt) {
+    const value = evt.target.value;
+    setNewPatient({
+      ...newPatient,
+      [evt.target.name]: value,
+    });
+  }
 
-  const fetchPatientRequests = async () => {
+  function handlePrescriptionChange(evt) {
+    const value = evt.target.value;
+    setPrescription({
+      ...prescription,
+      [evt.target.name]: value,
+    });
+  }
+
+  const fetchPatients = async () => {
     setLoading(true);
     try {
       // get the token
       let token = sessionStorage.getItem("token")
-      // get the response from server
-      let patients_resp = await (await api_srv).getPatientRequests(token);
-      console.log(" requests",patients_resp)
-      setPatientRequests(patients_resp);
+      let doctor_id = sessionStorage.getItem("doctor_id")
+      let patients_resp = await (await api_srv).getPatients(token,doctor_id);
+
+      console.log("patients for the doctor",patients_resp)
+      setPatients(patients_resp );
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -59,11 +88,16 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  const accept = async (patient_id,doctor_id,token) => {
+  const postPrescription= async (patient_id,weight,height,prescription) => {
     setLoading(true);
     try {
-      let accept_resp = await (await api_srv).acceptRequests(patient_id,doctor_id,token);
-     console.log("accept response",accept_resp)
+      // get the token
+      let token = sessionStorage.getItem("token")
+      let doctor_id = sessionStorage.getItem("doctor_id")
+
+      
+      let presc_resp = await (await api_srv).addPrescription(token,patient_id,doctor_id,weight,height,prescription) ;
+      console.log("prescription resp",presc_resp )
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -72,11 +106,31 @@ const DoctorContextProvider = (props) => {
     }
   };
 
+  const createPatient= async (newPatient) => {
+    setLoading(true);
+    try {
+      // get the token
+      let token = sessionStorage.getItem("token")
+      let doctor_id = sessionStorage.getItem("doctor_id")
+
+      
+      let patient_resp = await (await api_srv).addPatient(token, doctor_id,newPatient) ;
+      console.log(" resp from adding patient",patient_resp )
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      let error = await err;
+      console.log(error.message);
+    }
+  };
+
+
   const fetchPatientData = async (token,patient_id) => {
     setLoading(true);
     try {
       let patient_data_resp = await (await api_srv).getPatientData(token,patient_id);
-     console.log("accept response",patient_data_resp)
+    
+     setPatientData(patient_data_resp)
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -90,11 +144,18 @@ const DoctorContextProvider = (props) => {
   return (
     <DoctorContext.Provider
       value={{
-        patientRequests,
-        fetchPatientRequests,
-        accept,
+        patients,
+        fetchPatients,
         doctorInfo,fetchIndividualDoc,
-        fetchPatientData
+        fetchPatientData,
+        newPatient,
+        handlePatientChange,
+        postPrescription,
+        prescription,
+        handlePrescriptionChange,
+        createPatient,
+        loading,
+        patientData
       
       }}
     >

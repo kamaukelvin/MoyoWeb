@@ -3,7 +3,7 @@ import axios from "axios";
 let api_url = 'https://moyo-app-api.herokuapp.com/'
 
 
-function register (firstName, lastName,email,phone,password) {
+function register (firstName, lastName,email,phone,password,hospital, location) {
     return new Promise( async function(resolve, reject) {
         try {
           let config = {
@@ -16,17 +16,19 @@ function register (firstName, lastName,email,phone,password) {
          const body = {
           
           "name": firstName + " "+ lastName,
-          "hospital": "Kenyatta",
-          "location": "Yaya Center",
+          "hospital": hospital,
+          "location": location,
           "phone": phone,
           "email": email,
           "password": password
         };
-       console.log("signup body", body)
+        console.log("the body to register doctor", body)
+       
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
            
             }
+          
         catch (err) {
          return reject(err)
         }
@@ -59,7 +61,7 @@ function login (email,password) {
   })
   }
 
-function getPatientRequests (token) {
+function getPatients (token,id) {
     return new Promise( async function(resolve, reject) {
         try {
       
@@ -69,8 +71,76 @@ function getPatientRequests (token) {
              "Authorization": `Bearer ${token}`
            },
          }
-         const endpoint ="request-doctor"
+         const endpoint =`patients/${id}`
               let response = await call_get_api(endpoint,config)
+              return resolve(response) ;
+           
+            }
+        catch (err) {
+         return reject(err)
+        }
+  })
+  }
+
+function addPrescription (token,patient_id,doctor_id,weight,height,prescription) {
+    return new Promise( async function(resolve, reject) {
+        try {
+      
+          let config = {
+            headers: {
+             "Content-Type": "application/json",
+             "Authorization": `Bearer ${token}`
+           },
+         }
+
+         const body = {
+          
+          
+            "patient_id": patient_id,
+            "doctor_id": doctor_id,
+            "weight":weight,
+            "height": height,
+            "prescription": prescription
+          
+        };
+         const endpoint ="patient-prescription"
+              let response = await call_post_api(endpoint,body,config)
+              return resolve(response) ;
+           
+            }
+        catch (err) {
+         return reject(err)
+        }
+  })
+  }
+function addPatient (token,doctor_id,newPatient) {
+    return new Promise( async function(resolve, reject) {
+        try {
+      
+          let config = {
+            headers: {
+             "Content-Type": "application/json",
+             "Authorization": `Bearer ${token}`
+           },
+         }
+
+         const body = {
+            "first_name":newPatient.firstName,
+            "last_name":newPatient.lastName,
+            "email":newPatient.email,
+            "phonenumber":newPatient.phone,
+            "id_number":newPatient.id,
+            "doctor_id": doctor_id,
+            "weight":newPatient.weight,
+            "height":newPatient.height,
+            "systolic_diastolic": newPatient.bpReadings,
+            "heart_rate": newPatient.heart_rate
+        
+          
+        };
+        console.log("the body from new patient is", body)
+         const endpoint ="register"
+              let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
            
             }
@@ -111,8 +181,8 @@ function getPatientData (token,patient_id) {
              "Authorization": `Bearer ${token}`
            },
          }
-         const endpoint =`patient-data/${patient_id}`
-         console.log("to send",config, endpoint)
+         const endpoint =`users/5f27fee7e16f5342187095f5`
+        
               let response = await call_get_api(endpoint,config)
               return resolve(response) ;
               
@@ -124,32 +194,7 @@ function getPatientData (token,patient_id) {
   })
   }
 
-function acceptRequests (patient_id,doctor_id,token) {
-    return new Promise( async function(resolve, reject) {
-        try {
-      
-          let config = {
-            headers: {
-             "Content-Type": "application/json",
-             "Authorization": `Bearer ${token}`
-           },
-         }
-         const endpoint ="accept-requests"
-         const body = {
-          "patient_id": patient_id,
-          "doctor_id": doctor_id,
-          "status": true
-      
-      };
-              let response = await call_post_api(endpoint,body,config)
-              return resolve(response) ;
-           
-            }
-        catch (err) {
-         return reject(err)
-        }
-  })
-  }
+
 
 async function call_post_api (endpoint,body,config) {
     return new Promise( async function(resolve, reject) {
@@ -202,8 +247,9 @@ async function call_get_api (endpoint,config) {
     call_post_api,
     register,
     login,
-    getPatientRequests,
-    acceptRequests,
+    getPatients,
     getIndividualDoctor,
-    getPatientData
+    getPatientData,
+    addPrescription,
+    addPatient
   }
