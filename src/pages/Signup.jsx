@@ -3,12 +3,21 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { AlertsContext } from "../context/AlertsContext";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Alert from "../components/alerts/WarningAlert";
 
 export default function Signup() {
   const context = useContext(AuthContext);
   const { newUser, handleChange, signup, loading } = context;
+
+  const {message,variant}= alert
+  const alertsContext = useContext(AlertsContext)
+
+  // destructure
+
+  const{showAlert}= alertsContext
 
   return (
     <div className="grid-container">
@@ -67,6 +76,7 @@ export default function Signup() {
                         <h3 className="text-center pb-3">
                           <u>Create Account</u>
                         </h3>
+                        {showAlert && <Alert message={message} variant={variant}/>}
                         <div className="form-row">
                           <div className="form-group col-md-6">
                             <label htmlFor="First Name">First Name</label>
@@ -241,22 +251,22 @@ export default function Signup() {
                         <p className="text-center">
                           <button
                             type="submit"
-                            disabled={loading}
+                            disabled={newUser.loading}
                             className="btn  ms-form-btn my-md-4 px-md-5 rounded-20"
                           >
-                            {loading && (
+                            {newUser.loading && (
                               <i
                                 className="fa fa-circle-notch fa-spin"
                                 style={{ marginRight: "5px" }}
                               />
                             )}
-                            {loading && (
+                            {newUser.loading && (
                               <span className="text-capitalize">
                                 Creating User...
                               </span>
                             )}
 
-                            {!loading && (
+                            {!newUser.loading && (
                               <span className="text-capitalize">
                                 {" "}
                                 Create Account

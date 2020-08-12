@@ -16,7 +16,7 @@ const PatientsList = () => {
       initialize();
 
     
-  },[])
+  },[fetchIndividualDoc])
     return (
       <div>
       <div className="grid-container bg-white">

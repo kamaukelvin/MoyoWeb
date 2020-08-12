@@ -5,6 +5,7 @@ import { DoctorContext } from "../context/DoctorContext";
 import { ModalContext } from "../context/ModalContext";
 import { Link } from "react-router-dom";
 import AddPrescription from "../components/modals/AddPrescription";
+import { ToastContainer } from "react-toastify";
 
 const PatientStats = (props) => {
   const context = useContext(DoctorContext);
@@ -13,6 +14,7 @@ const PatientStats = (props) => {
     fetchIndividualDoc,
     doctorInfo,
     patientData,
+    show,
   } = context;
   const modalContext = useContext(ModalContext);
   const refModal = useRef();
@@ -27,11 +29,13 @@ const PatientStats = (props) => {
       );
     }
     initialize();
-  }, []);
+  }, [fetchIndividualDoc, fetchPatientData, props.match.params.id]);
+
+  console.log("the id to be passed", props.match.params.id);
   let weight = patientData.weight;
   let height = patientData.height;
 
-  let bmi = weight / ( Math.pow(height/100, 2));
+  let bmi = weight / Math.pow(height / 100, 2);
 
   function bmi_status(weight, height) {
     let bmi = weight / height ** 2;
@@ -140,8 +144,10 @@ const PatientStats = (props) => {
               >
                 <div className="prescription ml-5 mt-3">
                   <div className="records" style={{ width: "100%" }}>
-                    <p className="font-weight-bold">Patients What Records</p>
-         
+                    <p className="font-weight-bold">
+                      Patients {patientData.first_name} {patientData.last_name}{" "}
+                      Records
+                    </p>
                   </div>
                 </div>
                 <div className="container-x">
@@ -197,6 +203,7 @@ const PatientStats = (props) => {
                     Previous Prescriptions
                   </h4>
                   <AddPrescription
+                    patient_id={props.match.params.id}
                     show={modalShow}
                     onHide={modalClose}
                     refModal={refModal}
@@ -210,6 +217,7 @@ const PatientStats = (props) => {
                     <i> Add A Prescription</i>
                   </button>
                 </div>
+                <ToastContainer />
                 <table className="table table-hover">
                   <thead>
                     <tr>
@@ -268,50 +276,49 @@ const PatientStats = (props) => {
                   </div>
                   <div className="container-x">
                     <div className="readings">
-                    <div className="row">
-                    <div className="col-md-3">
-                      <div className="container-left">
-                        <p className="pt-3">Blood Pressure</p>
-                        <h3 className="text-center">
-                          {patientData.systolic_diastolic}
-                        </h3>
-                      </div>
-                      </div>
-                      <div className="col-md-3">
-                      <div className="container-left">
-                        <p className="pt-3">Heart Rate</p>
-                        <h3 className="text-center">
-                          {patientData.heart_rate}
-                        </h3>
-                      </div>
-                      </div>
-                      <div className="col-md-3">
-                      <div className="container-right">
-                        <p className="pl-3 pt-3">
-                          Weight:{" "}
-                          <span className="font-weight-bold">
-                            {patientData.weight} kg
-                          </span>
-                        </p>
-                        <p className="pl-3 mb-2">
-                          Height:{" "}
-                          <span className="font-weight-bold">
-                            {patientData.height} cm
-                          </span>
-                        </p>
-                        <p className="pl-3 mb-0 ">
-                          B M I: <span className="font-weight-bold">{bmi}</span>
-                        </p>
-                      </div>
-                      </div>
-                      <div className="col-md-3">
-                      <div className="container-left">
-                        <p className="pt-3">BMI Status</p>
-                        <h5 className="text-center">
-                         underweight
-                        </h5>
-                      </div>
-                      </div>
+                      <div className="row">
+                        <div className="col-md-3">
+                          <div className="container-left">
+                            <p className="pt-3">Blood Pressure</p>
+                            <h3 className="text-center">
+                              {patientData.systolic_diastolic}
+                            </h3>
+                          </div>
+                        </div>
+                        <div className="col-md-3">
+                          <div className="container-left">
+                            <p className="pt-3">Heart Rate</p>
+                            <h3 className="text-center">
+                              {patientData.heart_rate}
+                            </h3>
+                          </div>
+                        </div>
+                        <div className="col-md-3">
+                          <div className="container-right">
+                            <p className="pl-3 pt-3">
+                              Weight:{" "}
+                              <span className="font-weight-bold">
+                                {patientData.weight} kg
+                              </span>
+                            </p>
+                            <p className="pl-3 mb-2">
+                              Height:{" "}
+                              <span className="font-weight-bold">
+                                {patientData.height} cm
+                              </span>
+                            </p>
+                            <p className="pl-3 mb-0 ">
+                              B M I:{" "}
+                              <span className="font-weight-bold">{bmi}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="col-md-3">
+                          <div className="container-left">
+                            <p className="pt-3">BMI Status</p>
+                            <h5 className="text-center">underweight</h5>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="record-days">

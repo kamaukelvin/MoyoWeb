@@ -1,16 +1,24 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useContext } from "react";
 import { api_srv } from "../service";
 import { useHistory } from 'react-router-dom';
+import {ModalContext} from '../context/ModalContext'
+
+import {toast } from 'react-toastify';
+
 
 const DoctorContext = createContext();
 const DoctorContextProvider = (props) => {
   const history = useHistory()
   
+ const modalContext = useContext(ModalContext)
+ const {modalClose}= modalContext
+
 // states
 
   const [patients, setPatients]= useState([])
   const [doctorInfo, setDoctorInfo] = useState({})
   const [loading, setLoading] = useState(false);
+
   const [newPatient, setNewPatient]=useState({
     firstName:'',
     lastName:'',
@@ -19,20 +27,22 @@ const DoctorContextProvider = (props) => {
     weight:'',
     bpReadings:'',
     id:'',
-    heart_rate:''
+    heart_rate:'',
+    loading: false
 
   })
   const [prescription, setPrescription]=useState({
     name:'',
-    dosage:'',
     weight:'',
     height:'',
     duration:'',
+    dose:'',
+    loading:false
   
 
   })
   const [patientData, setPatientData]= useState({})
-
+  const [show, setShow] = useState(false);
 
 // handle Input Changes
   function handlePatientChange(evt) {
@@ -88,26 +98,30 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  const postPrescription= async (patient_id,weight,height,prescription) => {
-    setLoading(true);
+  const postPrescription= async (id,prescription) => {
+    setPrescription({...prescription, loading:true});
     try {
+    
       // get the token
       let token = sessionStorage.getItem("token")
-      let doctor_id = sessionStorage.getItem("doctor_id")
 
       
-      let presc_resp = await (await api_srv).addPrescription(token,patient_id,doctor_id,weight,height,prescription) ;
-      console.log("prescription resp",presc_resp )
-      setLoading(false);
+      let presc_resp = await (await api_srv).addPrescription(token,id,prescription) ;
+  
+      setPrescription({...prescription, loading:false});
+      modalClose()
+      toast.success("Prescription added successfully")
     } catch (err) {
-      setLoading(false);
+      setPrescription({...prescription, loading:false});
       let error = await err;
+      modalClose()
+      toast.error("Prescription could not be added, please try again")
       console.log(error.message);
     }
   };
 
   const createPatient= async (newPatient) => {
-    setLoading(true);
+    setNewPatient({...newPatient, loading:true})
     try {
       // get the token
       let token = sessionStorage.getItem("token")
@@ -115,11 +129,15 @@ const DoctorContextProvider = (props) => {
 
       
       let patient_resp = await (await api_srv).addPatient(token, doctor_id,newPatient) ;
-      console.log(" resp from adding patient",patient_resp )
-      setLoading(false);
+     
+      setNewPatient({...newPatient, loading:false})
+      modalClose()
+      toast.success("Patient added successfully")
     } catch (err) {
-      setLoading(false);
+      setNewPatient({...newPatient, loading:false})
       let error = await err;
+      modalClose()
+      toast.error("Patient could not be added, please try again")
       console.log(error.message);
     }
   };
@@ -129,7 +147,7 @@ const DoctorContextProvider = (props) => {
     setLoading(true);
     try {
       let patient_data_resp = await (await api_srv).getPatientData(token,patient_id);
-    
+    console.log("patient data response",patient_data_resp )
      setPatientData(patient_data_resp)
       setLoading(false);
     } catch (err) {
@@ -155,7 +173,8 @@ const DoctorContextProvider = (props) => {
         handlePrescriptionChange,
         createPatient,
         loading,
-        patientData
+        patientData,
+        show, setShow
       
       }}
     >

@@ -6,7 +6,8 @@ body{
  font: 1.6rem Helvetica;
  margin:0;
  background-image: linear-gradient(#B34BF5, #7D68F5,#6276F5);
- background-repeat: no-repeat
+ background-repeat: no-repeat;
+ overflow-x: hidden;
 }
 #root{
   height: 100%;

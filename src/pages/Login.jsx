@@ -3,12 +3,21 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { AlertsContext } from "../context/AlertsContext";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Alert from "../components/alerts/WarningAlert";
 
 export default function Login() {
   const context = useContext(AuthContext);
-  const { user, handleLoginChange, login, loading } = context;
+  const { user, handleLoginChange, login,  alert } = context;
+  const {message,variant}= alert
+  const alertsContext = useContext(AlertsContext)
+
+  // destructure
+
+  const{showAlert}= alertsContext
+ 
 
   return (
     <div className="grid-container">
@@ -54,6 +63,7 @@ export default function Login() {
                         <h3 className="text-center pb-3">
                           <u>Log In</u>
                         </h3>
+                        {showAlert && <Alert message={message} variant={variant}/>}
                         <div className="form-group">
                           <label htmlFor="email">Email</label>
                           <input
@@ -119,20 +129,21 @@ export default function Login() {
                           <button
                             type="submit"
                             className="btn  ms-form-btn my-md-4 px-md-5 rounded-20"
+                            disabled={user.loading}
                           >
-                            {loading && (
+                            {user.loading && (
                               <i
                                 className="fa fa-circle-notch fa-spin"
                                 style={{ marginRight: "5px" }}
                               />
                             )}
-                            {loading && (
+                            {user.loading && (
                               <span className="text-capitalize">
                                 Logging In...
                               </span>
                             )}
 
-                            {!loading && (
+                            {!user.loading && (
                               <span className="text-capitalize"> LogIn</span>
                             )}
                           </button>

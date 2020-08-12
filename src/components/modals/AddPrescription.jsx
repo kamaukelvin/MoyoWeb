@@ -4,6 +4,7 @@ import Prescription from '../forms/Prescription'
 
 
 const AddPrescription = (props) => {
+  console.log("props are",props)
   return (
     <div>
       <Modal
@@ -18,7 +19,7 @@ const AddPrescription = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Prescription />
+        <Prescription id={props.patient_id}/>
         </Modal.Body>
       </Modal>
     </div>

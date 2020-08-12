@@ -5,18 +5,23 @@ import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const context = useContext(DoctorContext);
-  const { fetchPatientRequests, patientRequests, accept,doctorInfo,fetchIndividualDoc } = context;
-  
+  const {
+    fetchPatientRequests,
+    patientRequests,
+    accept,
+    doctorInfo,
+    fetchIndividualDoc,
+  } = context;
 
-  console.log("doc details", doctorInfo)
-const token= sessionStorage.getItem("token")
+  console.log("doc details", doctorInfo);
+  const token = sessionStorage.getItem("token");
   useEffect(() => {
     async function initialize() {
-      await fetchIndividualDoc()
+      await fetchIndividualDoc();
       await fetchPatientRequests();
     }
     initialize();
-  }, []);
+  }, [fetchIndividualDoc, fetchPatientRequests]);
 
   return (
     <div className="dash-grid-container bg-white">
@@ -61,56 +66,74 @@ const token= sessionStorage.getItem("token")
         </div>
         {/* MAIN SECTION START */}
         <div className="col-sm-9">
-        <div className="profile ml-5 mt-3">
-        <div className="chip-1">
-          <p className>Patient List</p>
-          <img src="img/profile.png" alt="Person" width={96} height={96} />
-          <h6>Dr Who</h6>
-          <h6>MD Cardiologist M.E.H</h6>
-        
-        </div>
-  
-            <a href="Dashboard-2.html" style={{textDecoration: 'none'}}><button type="button" className="btn btn-light float-right btn-t mr-3" style={{marginTop: '-40px'}}><i> Add Patient</i></button>
-      </a>
+          <div className="profile ml-5 mt-3">
+            <div className="chip-1">
+              <p className>Patient List</p>
+              <img src="img/profile.png" alt="Person" width={96} height={96} />
+              <h6>Dr Who</h6>
+              <h6>MD Cardiologist M.E.H</h6>
+            </div>
+
+            <a href="Dashboard-2.html" style={{ textDecoration: "none" }}>
+              <button
+                type="button"
+                className="btn btn-light float-right btn-t mr-3"
+                style={{ marginTop: "-40px" }}
+              >
+                <i> Add Patient</i>
+              </button>
+            </a>
             <div className="container">
-            <table className="table table-hover">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td />
-            <td />
-            {/* <td></td> */}
-            <td>
-              <button type="button" className="btn btn-light mr-3"><i> Records</i></button>
-            </td></tr>
-          <tr>
-            <td />
-            <td />
-            {/* <td></td> */}
-            <td>
-              <button type="button" className="btn btn-light mr-3"><i> Records</i></button> 
-            </td></tr> 
-          <tr>
-            <td />
-            <td />
-            {/* <td></td> */}
-            <td>
-              <button type="button" className="btn btn-light mr-3"><i> Records</i></button> 
-            </td></tr>
-          <tr>
-            <td />
-            <td />
-            {/* <td></td> */}
-            <td>
-              <button type="button" className="btn btn-light mr-3"><i> Records</i></button>
-            </td></tr>
-        </tbody>
-      </table>
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td />
+                    <td />
+                    {/* <td></td> */}
+                    <td>
+                      <button type="button" className="btn btn-light mr-3">
+                        <i> Records</i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td />
+                    <td />
+                    {/* <td></td> */}
+                    <td>
+                      <button type="button" className="btn btn-light mr-3">
+                        <i> Records</i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td />
+                    <td />
+                    {/* <td></td> */}
+                    <td>
+                      <button type="button" className="btn btn-light mr-3">
+                        <i> Records</i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td />
+                    <td />
+                    {/* <td></td> */}
+                    <td>
+                      <button type="button" className="btn btn-light mr-3">
+                        <i> Records</i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

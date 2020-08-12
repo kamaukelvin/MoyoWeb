@@ -3,44 +3,49 @@ import { DoctorContext } from "../context/DoctorContext";
 import { ModalContext } from "../context/ModalContext";
 import coder from "../assets/images/coder.jpg";
 import { Link } from "react-router-dom";
-import AddPatient from '../components/modals/AddPatient'
+import AddPatient from "../components/modals/AddPatient";
+import { ToastContainer } from "react-toastify";
 
 export default function Dashboard(props) {
   const context = useContext(DoctorContext);
   const modalContext = useContext(ModalContext);
-  const { fetchPatients, patients, doctorInfo,fetchIndividualDoc } = context;
-  
+  const {
+    fetchPatients,
+    patients,
+    doctorInfo,
+    fetchIndividualDoc,
+    loading,
+  } = context;
+
   const { setModalShow, modalShow, modalClose } = modalContext;
   const refModal = useRef();
- 
-const token= sessionStorage.getItem("token")
+
+  const token = sessionStorage.getItem("token");
   useEffect(() => {
     async function initialize() {
-      await fetchIndividualDoc()
-      await fetchPatients();
+      await fetchIndividualDoc();
+      fetchPatients();
     }
     initialize();
-  }, []);
+  }, [fetchIndividualDoc, fetchPatients]);
 
-  console.log("patients list",patients)
+  console.log("patients list", patients);
   const handle_view_record = async (id) => {
- 
     try {
       //  await view_quotation(id)
       props.history.push(`/patient/${id}`);
     } catch (err) {
       console.log(err);
     }
-
   };
-
-  
 
   return (
     <div className="dash-grid-container bg-white">
       <header className="dash-header">
         <div className="dash-brand">
-          <Link className="text-dark" to="/dashboard">Moyoweb</Link>
+          <Link className="text-dark" to="/dashboard">
+            Moyoweb
+          </Link>
         </div>
         <div className="dash-header-links">
           <i className="fa fa-bars" aria-hidden="true" />
@@ -76,74 +81,70 @@ const token= sessionStorage.getItem("token")
         </div>
         {/* MAIN SECTION START */}
         <div className="col-sm-9">
-        <div className="profile ml-5 mt-3">
-        <div className="chip-1">
-          <h4 className="font-weight-bold mb-5">Patient List</h4>
-          <img src={coder} alt="Person" width={96} height={96} />
-          <h6>Dr {doctorInfo.name}</h6>
-          <h6>MD Cardiologist M.E.H</h6>
-        
-        </div>
-       < AddPatient 
-           show={modalShow}
-           onHide={modalClose}
-           refModal={refModal}/>
-           
-              <button
-              onClick={() => setModalShow(true)} 
-            type="button" className="btn btn-light float-right btn-t mr-3" style={{marginTop: '-40px'}}><i> Add Patient</i></button>
-     
-            <div className="container table-responsive mt-5">
-            <table className="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">First Name</th>
-            <th scope="col">Last Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        {patients.map((record)=>{
-          return(
-            <tr>
-            <th scope="row">1</th>
-            <td>{record.first_name}</td>
-            <td>{record.last_name}</td>
-            <td>{record.email}</td>
-            <td>{record.phonenumber}</td>
-            <td>             
-              <button 
-              onClick={()=>handle_view_record(record.patient_id)}
-              type="button" className="btn btn-light mr-3 ml-auto"><i> Records</i></button></td>
-          </tr>
-          )
-        })}
-       
-  
-        </tbody>
-      </table>
-            {/* <table className="table table-hover">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td />
-            <td />
-            <td>
-              <button type="button" className="btn btn-light mr-3 ml-auto"><i> Records</i></button>
-            </td></tr>
-    
-        </tbody>
-      </table> */}
+          <div className="profile ml-5 mt-3">
+            <div className="chip-1">
+              <h4 className="font-weight-bold mb-5">Patient List</h4>
+              <img src={coder} alt="Person" width={96} height={96} />
+              <h6>Dr {doctorInfo.name}</h6>
+              <h6>MD Cardiologist M.E.H</h6>
             </div>
+            <AddPatient
+              show={modalShow}
+              onHide={modalClose}
+              refModal={refModal}
+            />
+
+            <button
+              onClick={() => setModalShow(true)}
+              type="button"
+              className="btn btn-light float-right btn-t mr-3"
+              style={{ marginTop: "-40px" }}
+            >
+              <i> Add Patient</i>
+            </button>
+            <ToastContainer />
+            {patients.length === 0 && loading ? (
+              <p className="mt-5 text-center">Loading Data....</p>
+            ) : patients.length === 0 && !loading ? (
+              <p className="mt-5 text-center">No Data Available</p>
+            ) : (
+              <div className="container table-responsive mt-5">
+                <table className="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">First Name</th>
+                      <th scope="col">Last Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Phone</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {patients.map((record, index) => {
+                      return (
+                        <tr>
+                          <th scope="row">{index}</th>
+                          <td>{record.first_name}</td>
+                          <td>{record.last_name}</td>
+                          <td>{record.email}</td>
+                          <td>{record.phone}</td>
+                          <td>
+                            <button
+                              onClick={() => handle_view_record(132456789090)}
+                              type="button"
+                              className="btn btn-light mr-3 ml-auto"
+                            >
+                              <i> Records</i>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>

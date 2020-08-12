@@ -7,10 +7,12 @@ import { BrowserRouter as Router } from "react-router-dom";
 import {AuthContextProvider} from './context/AuthContext'
 import {DoctorContextProvider} from './context/DoctorContext'
 import { ModalContextProvider } from "./context/ModalContext";
+import { AlertsContextProvider } from './context/AlertsContext';
 
 ReactDOM.render(
   <React.StrictMode>
      <Router>
+       <AlertsContextProvider>
     <ModalContextProvider>
     <AuthContextProvider>
     <DoctorContextProvider>
@@ -18,6 +20,7 @@ ReactDOM.render(
     </DoctorContextProvider>
     </AuthContextProvider>
     </ModalContextProvider>
+    </AlertsContextProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

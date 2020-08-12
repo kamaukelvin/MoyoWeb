@@ -30,6 +30,7 @@ function register (firstName, lastName,email,phone,password,hospital, location) 
             }
           
         catch (err) {
+        
          return reject(err)
         }
   })
@@ -72,6 +73,7 @@ function getPatients (token,id) {
            },
          }
          const endpoint =`patients/${id}`
+         console.log("the endpoint of fetch patients",endpoint,token)
               let response = await call_get_api(endpoint,config)
               return resolve(response) ;
            
@@ -82,9 +84,11 @@ function getPatients (token,id) {
   })
   }
 
-function addPrescription (token,patient_id,doctor_id,weight,height,prescription) {
+function addPrescription (token,patient_id,prescription) {
     return new Promise( async function(resolve, reject) {
+
         try {
+         console.log("prescription here",prescription)
       
           let config = {
             headers: {
@@ -97,13 +101,15 @@ function addPrescription (token,patient_id,doctor_id,weight,height,prescription)
           
           
             "patient_id": patient_id,
-            "doctor_id": doctor_id,
-            "weight":weight,
-            "height": height,
-            "prescription": prescription
+            "weight":prescription.weight,
+            "height":prescription.height,
+            "name":prescription.name,
+            "dose":prescription.dose,
+            "duration": prescription.duration
           
         };
-         const endpoint ="patient-prescription"
+     
+         const endpoint ="presicription-data"
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
            
@@ -128,7 +134,7 @@ function addPatient (token,doctor_id,newPatient) {
             "first_name":newPatient.firstName,
             "last_name":newPatient.lastName,
             "email":newPatient.email,
-            "phonenumber":newPatient.phone,
+            "phone":newPatient.phone,
             "id_number":newPatient.id,
             "doctor_id": doctor_id,
             "weight":newPatient.weight,
@@ -139,7 +145,7 @@ function addPatient (token,doctor_id,newPatient) {
           
         };
         console.log("the body from new patient is", body)
-         const endpoint ="register"
+         const endpoint ="add"
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
            
@@ -181,7 +187,7 @@ function getPatientData (token,patient_id) {
              "Authorization": `Bearer ${token}`
            },
          }
-         const endpoint =`users/5f27fee7e16f5342187095f5`
+         const endpoint =`patient-prescription/${patient_id}`
         
               let response = await call_get_api(endpoint,config)
               return resolve(response) ;

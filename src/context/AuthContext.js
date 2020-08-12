@@ -1,10 +1,15 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { api_srv } from "../service";
 import { useHistory } from 'react-router-dom';
+import { AlertsContext } from "./AlertsContext";
 
 const AuthContext = createContext();
 const AuthContextProvider = (props) => {
   const history = useHistory()
+  const alertsContext = useContext(AlertsContext);
+  const { setShowAlert, showAlert } = alertsContext;
+
+
   
 // states
 
@@ -13,6 +18,7 @@ const AuthContextProvider = (props) => {
     password: "",
     showPassword: false,
     rememberMe: false,
+    loading: false
   });
 
   const [loading, setLoading] = useState(false);
@@ -25,11 +31,23 @@ const AuthContextProvider = (props) => {
     password: "",
     confirmPassword: "",
     hospital:'',
-    location:''
+    location:'',
+    loading: false
   });
 
   const [userDetails,setUserDetails]=useState({})
+  const [alert, setAlert] = useState({
+    message: "",
+    variant: "",
+  });
 
+    useEffect(() => {
+    if (showAlert) {
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
+    }
+  }, [alert, setShowAlert, showAlert]);
 
 // handle Input Changes
   function handleChange(evt) {
@@ -60,7 +78,7 @@ const AuthContextProvider = (props) => {
 
   // LogIn
   const login = async () => {
-    setLoading(true);
+    setUser({...user, loading:true})
     try {
       sessionStorage.clear()
       let login_resp = await (await api_srv).login(
@@ -71,20 +89,31 @@ const AuthContextProvider = (props) => {
       sessionStorage.setItem("token",login_resp.token)
       sessionStorage.setItem("doctor_id",login_resp.doctor._id)
       setUserDetails(login_resp.doctor);
+      setUser({...user, loading:false})
       history.push('/dashboard')
-      setUser({ username: "", password: "" });
-      setLoading(false);
+      setUser({ 
+        username: "", 
+        password: ""
+       });
+     
+
     } catch (err) {
-      setLoading(false);
-      setUser({ username: "", password: "" });
+      console.log("at error start")
+      setUser({...user, loading:false})
+      console.log("at error end")
+      setUser({ 
+        username: "",
+        password: "" });
       let error = await err;
-      console.log(error.message);
+      setShowAlert(true);
+      setAlert({ ...alert, message: error.message, variant: "danger" });
+
     }
   };
 
   // signup
   const signup = async () => {
-    setLoading(true);
+    setNewUser({...newUser, loading:true})
     try {
    
       let register_resp = await (await api_srv).register(
@@ -98,10 +127,12 @@ const AuthContextProvider = (props) => {
 
       );
  
-      setLoading(false);
+         setNewUser({...newUser, loading:false})
       history.push('/login')
-    } catch (err) {
-      setLoading(false);
+    }
+    
+    catch (err) {
+         setNewUser({...newUser, loading:false})
       setNewUser({
         email: "",
         firstName: "",
@@ -113,7 +144,10 @@ const AuthContextProvider = (props) => {
         hospital:""
       });
       let error = await err;
-      console.log(error.message);
+      console.log("error is", JSON.stringify(error))
+      // console.log("error is", JSON.stringify(error.message))
+      // setAlert({ ...alert, message: error.message, variant: "danger" });
+      setShowAlert(true);
     }
   };
 
@@ -130,6 +164,7 @@ const AuthContextProvider = (props) => {
         login,
         loading,
         userDetails,
+        alert, setAlert
       }}
     >
       {props.children}
