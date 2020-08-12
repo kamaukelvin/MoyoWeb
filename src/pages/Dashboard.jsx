@@ -131,7 +131,7 @@ export default function Dashboard(props) {
                           <td>{record.phone}</td>
                           <td>
                             <button
-                              onClick={() => handle_view_record(132456789090)}
+                              onClick={() => handle_view_record(record._id)}
                               type="button"
                               className="btn btn-light mr-3 ml-auto"
                             >

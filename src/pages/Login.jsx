@@ -10,14 +10,13 @@ import Alert from "../components/alerts/WarningAlert";
 
 export default function Login() {
   const context = useContext(AuthContext);
-  const { user, handleLoginChange, login,  alert } = context;
-  const {message,variant}= alert
-  const alertsContext = useContext(AlertsContext)
+  const { user, handleLoginChange, login, alert } = context;
+  const { message, variant } = alert;
+  const alertsContext = useContext(AlertsContext);
 
   // destructure
 
-  const{showAlert}= alertsContext
- 
+  const { showAlert } = alertsContext;
 
   return (
     <div className="grid-container">
@@ -63,7 +62,9 @@ export default function Login() {
                         <h3 className="text-center pb-3">
                           <u>Log In</u>
                         </h3>
-                        {showAlert && <Alert message={message} variant={variant}/>}
+                        {showAlert && (
+                          <Alert message={message} variant={variant} />
+                        )}
                         <div className="form-group">
                           <label htmlFor="email">Email</label>
                           <input
