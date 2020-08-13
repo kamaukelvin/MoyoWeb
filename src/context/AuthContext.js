@@ -85,7 +85,7 @@ const AuthContextProvider = (props) => {
         user.email,
         user.password
       );
-     console.log("login response", login_resp)
+ 
       sessionStorage.setItem("token",login_resp.token)
       sessionStorage.setItem("doctor_id",login_resp.doctor._id)
       setUserDetails(login_resp.doctor);
@@ -98,9 +98,9 @@ const AuthContextProvider = (props) => {
      
 
     } catch (err) {
-      console.log("at error start")
+
       setUser({...user, loading:false})
-      console.log("at error end")
+    
       setUser({ 
         username: "",
         password: "" });

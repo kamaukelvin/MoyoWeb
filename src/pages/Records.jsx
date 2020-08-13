@@ -13,7 +13,7 @@ export default function Dashboard() {
     fetchIndividualDoc,
   } = context;
 
-  console.log("doc details", doctorInfo);
+ 
   const token = sessionStorage.getItem("token");
   useEffect(() => {
     async function initialize() {
@@ -21,7 +21,7 @@ export default function Dashboard() {
       await fetchPatientRequests();
     }
     initialize();
-  }, [fetchIndividualDoc, fetchPatientRequests]);
+  }, []);
 
   return (
     <div className="dash-grid-container bg-white">

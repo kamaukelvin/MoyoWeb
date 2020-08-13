@@ -22,7 +22,7 @@ function register (firstName, lastName,email,phone,password,hospital, location) 
           "email": email,
           "password": password
         };
-        console.log("the body to register doctor", body)
+      
        
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
@@ -51,7 +51,7 @@ function login (email,password) {
             "password": password
         
         };
-      console.log("login body", body)
+     
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
            
@@ -73,7 +73,7 @@ function getPatients (token,id) {
            },
          }
          const endpoint =`patients/${id}`
-         console.log("the endpoint of fetch patients",endpoint,token)
+         
               let response = await call_get_api(endpoint,config)
               return resolve(response) ;
            
@@ -84,12 +84,10 @@ function getPatients (token,id) {
   })
   }
 
-function addPrescription (token,patient_id,prescription) {
+function addPrescription (token,doctor_id,patient_id,prescription) {
     return new Promise( async function(resolve, reject) {
 
         try {
-         console.log("prescription here",prescription)
-      
           let config = {
             headers: {
              "Content-Type": "application/json",
@@ -98,18 +96,23 @@ function addPrescription (token,patient_id,prescription) {
          }
 
          const body = {
-          
-          
-            "patient_id": patient_id,
-            "weight":prescription.weight,
-            "height":prescription.height,
-            "name":prescription.name,
-            "dose":prescription.dose,
-            "duration": prescription.duration
+
+          "patient_id":  patient_id,
+          "doctor_id": doctor_id,
+          "weight": prescription.weight,
+          "height": prescription.height,
+          "prescription": [
+            {
+              "name": prescription.name,
+              "dosage": prescription.dose,
+              "duration": prescription.duration
+            }
+         
+          ]
           
         };
-     
-         const endpoint ="presicription-data"
+   
+         const endpoint ="patient-prescription"
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
            
@@ -144,7 +147,7 @@ function addPatient (token,doctor_id,newPatient) {
         
           
         };
-        console.log("the body from new patient is", body)
+
          const endpoint ="add"
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;
@@ -190,6 +193,7 @@ function getPatientData (token,patient_id) {
          const endpoint =`patient-prescription/${patient_id}`
         
               let response = await call_get_api(endpoint,config)
+              console.log("the response is",response)
               return resolve(response) ;
               
             }

@@ -5,7 +5,9 @@ import { DoctorContext } from "../context/DoctorContext";
 import { ModalContext } from "../context/ModalContext";
 import { Link } from "react-router-dom";
 import AddPrescription from "../components/modals/AddPrescription";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer,cssTransition } from "react-toastify";
+import Moment from 'react-moment'
+import BP from '../components/charts/BP'
 
 const PatientStats = (props) => {
   const context = useContext(DoctorContext);
@@ -15,6 +17,7 @@ const PatientStats = (props) => {
     doctorInfo,
     patientData,
     show,
+    loading
   } = context;
   const modalContext = useContext(ModalContext);
   const refModal = useRef();
@@ -29,29 +32,15 @@ const PatientStats = (props) => {
       );
     }
     initialize();
-  }, [fetchIndividualDoc, fetchPatientData, props.match.params.id]);
+  }, []);
+ console.log("the data",patientData)
 
-  console.log("the id to be passed", props.match.params.id);
-  let weight = patientData.weight;
-  let height = patientData.height;
 
-  let bmi = weight / Math.pow(height / 100, 2);
 
-  function bmi_status(weight, height) {
-    let bmi = weight / height ** 2;
 
-    if (bmi < 18.5) {
-      return "Underweight";
-    } else if (bmi < 25) {
-      return "Normal";
-    } else if (bmi < 30) {
-      return "Overweight";
-    } else {
-      return "Obese";
-    }
-  }
 
   return (
+  
     <div className="container-fluid bg-white">
       {/* TOP SECTION START */}
       <section className="top-section">
@@ -135,7 +124,30 @@ const PatientStats = (props) => {
           </div>
           {/* MAIN SECTION START */}
           <div className="col-md-10">
-            <div className="tab-content" id="v-pills-tabContent">
+          {patientData.length===0 && loading ? <p className="text-center pt-5">loading...</p>: patientData.length===0 && !loading ? <p className="text-center pt-5">No records to display...</p>:
+          patientData.map((record, i)=>{
+            let recordLen = patientData.length;
+            let weight = record.weight;
+            let height = record.height;
+          
+            let bmi = weight / Math.pow(height / 100, 2);
+          
+            function bmi_status(weight, height) {
+              let bmi = weight / height ** 2;
+          
+              if (bmi < 18.5) {
+                return "Underweight";
+              } else if (bmi < 25) {
+                return "Normal";
+              } else if (bmi < 30) {
+                return "Overweight";
+              } else {
+                return "Obese";
+              }
+            }
+            if (recordLen === i + 1) {
+              return(
+              <div className="tab-content" id="v-pills-tabContent">
               <div
                 className="tab-pane fade "
                 id="v-pills-records"
@@ -155,36 +167,27 @@ const PatientStats = (props) => {
                     <thead>
                       <tr>
                         <th>Date</th>
-                        <th>Systolic/Diastolic Pressure</th>
                         <th>Heart Rate</th>
+                        <th>Height (cm)</th>
+                        <th>Weight (kg)</th>
                         <th>Level</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td />
-                        <td />
-                        <td />
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td />
-                        <td />
-                        <td />
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td />
-                        <td />
-                        <td />
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td />
-                        <td />
-                        <td />
-                        <td></td>
-                      </tr>
+                    {patientData.lenght===0 && loading ? <p className="text-center pt-5">Loading data...</p>: patientData.lenght===0 && !loading ? <p className="text-center">No data currently...</p>:
+                      patientData.map((row,i)=>{
+                        return(
+                          <tr key={i}>
+                          <td><Moment format="DD MMM YYYY" date={row.createdAt} /></td>                      
+                          <td></td>
+                          <td>{row.height}</td>
+                          <td>{row.weight}</td>
+                          <td></td>
+                        </tr>
+                        )
+                      })
+                    }
+                 
                     </tbody>
                   </table>
                 </div>
@@ -228,30 +231,19 @@ const PatientStats = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td />
-                      <td />
-                      <td />
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td />
-                      <td />
-                      <td />
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td />
-                      <td />
-                      <td />
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td />
-                      <td />
-                      <td />
-                      <td></td>
-                    </tr>
+                    {patientData.map((presc)=>presc.prescription.map((rec,i)=>{
+                      return(
+                        <tr key={i}>
+                        <td>{}</td>
+                      <td>{rec.name}</td>
+                      <td>{rec.dosage}</td>
+                        <td>{rec.duration}</td>
+                      </tr>
+                      )
+
+                    }))}
+                
+                  
                   </tbody>
                 </table>
               </div>
@@ -298,13 +290,13 @@ const PatientStats = (props) => {
                             <p className="pl-3 pt-3">
                               Weight:{" "}
                               <span className="font-weight-bold">
-                                {patientData.weight} kg
+                                {record.weight} kg
                               </span>
                             </p>
                             <p className="pl-3 mb-2">
                               Height:{" "}
                               <span className="font-weight-bold">
-                                {patientData.height} cm
+                                {record.height} cm
                               </span>
                             </p>
                             <p className="pl-3 mb-0 ">
@@ -322,9 +314,7 @@ const PatientStats = (props) => {
                       </div>
                     </div>
                     <div className="record-days">
-                      <ul>
-                        <li>BP</li>
-                      </ul>
+                    <BP/>
                       <div className="container-down">
                         <p>BP / Days</p>
                       </div>
@@ -339,7 +329,16 @@ const PatientStats = (props) => {
                 </div>
               </div>
             </div>
+              )
+            } else {
+              // not last one
+            }
 
+          })
+          
+         
+       
+          }
             {/* FOOTER SECTION START */}
             <footer className="footer">
               <div>Email : naekuj@students.uonbi.ac.ke</div>

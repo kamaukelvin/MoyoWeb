@@ -5,7 +5,8 @@ import { DoctorContext } from "../../context/DoctorContext";
 const Prescription = (props) => {
   const context = useContext(DoctorContext);
   const { prescription, handlePrescriptionChange, postPrescription } = context;
-  let id = props.id;
+  let patient_id = props.id;
+
   return (
     <div>
       <Formik
@@ -18,7 +19,7 @@ const Prescription = (props) => {
           dose: Yup.string().required("Dosage is required"),
           duration: Yup.string().required("Duration is required"),
         })}
-        onSubmit={() => postPrescription(id, prescription)}
+        onSubmit={() => postPrescription(patient_id, prescription)}
       >
         {({ errors, status, touched }) => (
           <Form className="">

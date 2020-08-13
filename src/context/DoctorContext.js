@@ -3,7 +3,7 @@ import { api_srv } from "../service";
 import { useHistory } from 'react-router-dom';
 import {ModalContext} from '../context/ModalContext'
 
-import {toast } from 'react-toastify';
+import {toast, cssTransition  } from 'react-toastify';
 
 
 const DoctorContext = createContext();
@@ -12,6 +12,13 @@ const DoctorContextProvider = (props) => {
   
  const modalContext = useContext(ModalContext)
  const {modalClose}= modalContext
+
+//  toast animation
+ const Zoom = cssTransition({
+  enter: 'zoomIn',
+  exit: 'zoomOut',
+});
+
 
 // states
 
@@ -41,7 +48,7 @@ const DoctorContextProvider = (props) => {
   
 
   })
-  const [patientData, setPatientData]= useState({})
+  const [patientData, setPatientData]= useState([])
   const [show, setShow] = useState(false);
 
 // handle Input Changes
@@ -69,7 +76,7 @@ const DoctorContextProvider = (props) => {
       let doctor_id = sessionStorage.getItem("doctor_id")
       let patients_resp = await (await api_srv).getPatients(token,doctor_id);
 
-      console.log("patients for the doctor",patients_resp)
+      
       setPatients(patients_resp );
       setLoading(false);
     } catch (err) {
@@ -88,7 +95,7 @@ const DoctorContextProvider = (props) => {
 
       
       let doctor_resp = await (await api_srv).getIndividualDoctor(token,doctor_id);
-      console.log("doc resp",doctor_resp )
+     
       setDoctorInfo(doctor_resp);
       setLoading(false);
     } catch (err) {
@@ -98,24 +105,28 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  const postPrescription= async (id,prescription) => {
+  const postPrescription= async (patient_id,prescription) => {
     setPrescription({...prescription, loading:true});
     try {
-    
+      console.log("prescription resp",patient_id)
       // get the token
       let token = sessionStorage.getItem("token")
-
+      let doctor_id = sessionStorage.getItem("doctor_id")
       
-      let presc_resp = await (await api_srv).addPrescription(token,id,prescription) ;
+      let presc_resp = await (await api_srv).addPrescription(token,doctor_id,patient_id ,prescription) ;
   
       setPrescription({...prescription, loading:false});
       modalClose()
-      toast.success("Prescription added successfully")
+      toast.success("Prescription added successfully", {
+        transition: Zoom,
+      })
     } catch (err) {
       setPrescription({...prescription, loading:false});
       let error = await err;
       modalClose()
-      toast.error("Prescription could not be added, please try again")
+      toast.error("Prescription could not be added, please try again", {
+        transition: Zoom,
+      })
       console.log(error.message);
     }
   };
@@ -132,12 +143,16 @@ const DoctorContextProvider = (props) => {
      
       setNewPatient({...newPatient, loading:false})
       modalClose()
-      toast.success("Patient added successfully")
+      toast.success("Patient added successfully", {
+        transition: Zoom,
+      })
     } catch (err) {
       setNewPatient({...newPatient, loading:false})
       let error = await err;
       modalClose()
-      toast.error("Patient could not be added, please try again")
+      toast.error("Patient could not be added, please try again", {
+        transition: Zoom,
+      })
       console.log(error.message);
     }
   };
@@ -147,7 +162,7 @@ const DoctorContextProvider = (props) => {
     setLoading(true);
     try {
       let patient_data_resp = await (await api_srv).getPatientData(token,patient_id);
-    console.log("patient data response",patient_data_resp )
+      console.log("the response from fetch data",patient_data_resp)
      setPatientData(patient_data_resp)
       setLoading(false);
     } catch (err) {

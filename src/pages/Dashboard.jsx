@@ -27,9 +27,9 @@ export default function Dashboard(props) {
       fetchPatients();
     }
     initialize();
-  }, [fetchIndividualDoc, fetchPatients]);
+  }, []);
 
-  console.log("patients list", patients);
+
   const handle_view_record = async (id) => {
     try {
       //  await view_quotation(id)
@@ -123,7 +123,7 @@ export default function Dashboard(props) {
                   <tbody>
                     {patients.map((record, index) => {
                       return (
-                        <tr>
+                        <tr key={index}>
                           <th scope="row">{index}</th>
                           <td>{record.first_name}</td>
                           <td>{record.last_name}</td>

@@ -4,7 +4,7 @@ import Prescription from '../forms/Prescription'
 
 
 const AddPrescription = (props) => {
-  console.log("props are",props)
+
   return (
     <div>
       <Modal
