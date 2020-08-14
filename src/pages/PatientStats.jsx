@@ -8,6 +8,7 @@ import AddPrescription from "../components/modals/AddPrescription";
 import { ToastContainer,cssTransition } from "react-toastify";
 import Moment from 'react-moment'
 import BP from '../components/charts/BP'
+import HR from '../components/charts/HR'
 
 const PatientStats = (props) => {
   const context = useContext(DoctorContext);
@@ -176,13 +177,27 @@ const PatientStats = (props) => {
                     <tbody>
                     {patientData.lenght===0 && loading ? <p className="text-center pt-5">Loading data...</p>: patientData.lenght===0 && !loading ? <p className="text-center">No data currently...</p>:
                       patientData.map((row,i)=>{
+                       
                         return(
                           <tr key={i}>
                           <td><Moment format="DD MMM YYYY" date={row.createdAt} /></td>                      
-                          <td></td>
+                          <td>
+                        { row.heartrate === undefined ?null:  <p>Sys:<span className="pr-2 font-weight-bold">{row.heartrate.sys}</span>Dia: <span className="font-weight-bold">{row.heartrate.dia}</span></p>}
+   
+                          </td>
                           <td>{row.height}</td>
                           <td>{row.weight}</td>
-                          <td></td>
+                          <td>
+
+                            {row.heartrate === undefined ? null:
+                            (row.heartrate.sys>=70 && row.heartrate.sys<=90) && (row.heartrate.dia>=90 && row.heartrate.dia<=60) ? <p className="text-info">LOW</p>:
+                            (row.heartrate.sys>=90 && row.heartrate.sys<=120) && (row.heartrate.dia>=60 && row.heartrate.dia<=80) ? <p className="text-success">NORMAL</p>:
+                            (row.heartrate.sys>=120 && row.heartrate.sys<=140) && (row.heartrate.dia>=80 && row.heartrate.dia<=90) ? <p className="text-warning">PRE-HIGH</p>:
+                            (row.heartrate.sys>=140 && row.heartrate.sys<=190) && (row.heartrate.dia>=90 && row.heartrate.dia<=100) ? <p className="text-danger">HIGH</p>: null
+
+                            
+                            }
+                          </td>
                         </tr>
                         )
                       })
@@ -211,6 +226,7 @@ const PatientStats = (props) => {
                     onHide={modalClose}
                     refModal={refModal}
                   />
+ 
                   <button
                     onClick={() => setModalShow(true)}
                     type="button"
@@ -219,6 +235,7 @@ const PatientStats = (props) => {
                   >
                     <i> Add A Prescription</i>
                   </button>
+            
                 </div>
                 <ToastContainer />
                 <table className="table table-hover">
@@ -271,7 +288,7 @@ const PatientStats = (props) => {
                       <div className="row">
                         <div className="col-md-3">
                           <div className="container-left">
-                            <p className="pt-3">Blood Pressure</p>
+                          <p className="pt-3 mb-1"><b>Heart Rate</b></p>
                             <h3 className="text-center">
                               {patientData.systolic_diastolic}
                             </h3>
@@ -279,27 +296,36 @@ const PatientStats = (props) => {
                         </div>
                         <div className="col-md-3">
                           <div className="container-left">
-                            <p className="pt-3">Heart Rate</p>
-                            <h3 className="text-center">
-                              {patientData.heart_rate}
-                            </h3>
+                          <p className="pt-3 mb-1"><b>Blood Pressure</b></p>
+                            <p className="">
+                              Systolic rate:{" "}
+                              <span className="font-weight-bold">
+                                {record.heartrate === undefined ?null:record.heartrate.sys} 
+                              </span>
+                            </p>
+                            <p className="">
+                              Dystolic Rate:{" "}
+                              <span className="font-weight-bold">
+                              {record.heartrate === undefined ?null:record.heartrate.dia} 
+                              </span>
+                            </p>
                           </div>
                         </div>
                         <div className="col-md-3">
-                          <div className="container-right">
-                            <p className="pl-3 pt-3">
+                          <div className="container-left">
+                            <p className="pt-3 mb-1">
                               Weight:{" "}
                               <span className="font-weight-bold">
                                 {record.weight} kg
                               </span>
                             </p>
-                            <p className="pl-3 mb-2">
+                            <p className="mb-1">
                               Height:{" "}
                               <span className="font-weight-bold">
                                 {record.height} cm
                               </span>
                             </p>
-                            <p className="pl-3 mb-0 ">
+                            <p className="mb-0 ">
                               B M I:{" "}
                               <span className="font-weight-bold">{bmi}</span>
                             </p>
@@ -313,18 +339,15 @@ const PatientStats = (props) => {
                         </div>
                       </div>
                     </div>
-                    <div className="record-days">
-                    <BP/>
-                      <div className="container-down">
-                        <p>BP / Days</p>
+                      <div className="row">
+                        <div className="col-md-6">
+                        <BP/>
+                        </div>
+                        <div className="col-md-6">
+                        <HR/>
+                        </div>
                       </div>
-                      <ul>
-                        <li>HR</li>
-                      </ul>
-                      <div className="container-down">
-                        <p>HR / Days</p>
-                      </div>
-                    </div>
+                  
                   </div>
                 </div>
               </div>

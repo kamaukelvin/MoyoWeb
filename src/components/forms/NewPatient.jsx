@@ -20,9 +20,10 @@ const NewPatient = () => {
           phone: Yup.string().required("Phone is required"),
           weight: Yup.string().required("Weight is required"),
           height: Yup.string().required("Height is required"),
-          bpReadings: Yup.string().required("Bp Readings are required"),
+          systolic: Yup.string().required("Systolic Rate is required"),
+          heart_rate: Yup.string().required("Heart Rate reading is required"),
           id: Yup.number().required("ID Number is required"),
-          heart_rate: Yup.number().required("Heart rate is required"),
+          diastolic: Yup.number().required("Diastolic Rate is required"),
         })}
         onSubmit={() => createPatient(newPatient)}
       >
@@ -163,26 +164,46 @@ const NewPatient = () => {
                   />
                 </div>
                 <div className="form-group col-md-6">
-                  <label htmlFor="weight">Systolic_diastolic</label>
+                  <label htmlFor="systolic">Systolic_diastolic</label>
                   <Field
-                    name="bpReadings"
+                    name="systolic"
                     type="text"
-                    value={newPatient.bpReadings}
+                    value={newPatient.systolic}
                     onChange={handlePatientChange}
                     className={
                       "form-control border" +
-                      (errors.bpReadings && touched.bpReadings
+                      (errors.systolic && touched.systolic
                         ? " is-invalid"
                         : "")
                     }
                   />
                   <ErrorMessage
-                    name="bpReadings"
+                    name="systolic"
                     component="div"
                     className="invalid-feedback pl-2"
                   />
                 </div>
                 <div className="form-group col-md-6">
+                  <label htmlFor="diastolic">Diastolic Rate</label>
+                  <Field
+                    name="diastolic"
+                    type="text"
+                    value={newPatient.diastolic}
+                    onChange={handlePatientChange}
+                    className={
+                      "form-control border" +
+                      (errors.diastolic && touched.diastolic
+                        ? " is-invalid"
+                        : "")
+                    }
+                  />
+                  <ErrorMessage
+                    name="diastolic"
+                    component="div"
+                    className="invalid-feedback pl-2"
+                  />
+                </div>
+                <div className="form-group col-md-12">
                   <label htmlFor="heart_rate">Heart Rate</label>
                   <Field
                     name="heart_rate"

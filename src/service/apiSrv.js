@@ -134,20 +134,20 @@ function addPatient (token,doctor_id,newPatient) {
          }
 
          const body = {
-            "first_name":newPatient.firstName,
-            "last_name":newPatient.lastName,
-            "email":newPatient.email,
-            "phone":newPatient.phone,
-            "id_number":newPatient.id,
-            "doctor_id": doctor_id,
-            "weight":newPatient.weight,
-            "height":newPatient.height,
-            "systolic_diastolic": newPatient.bpReadings,
-            "heart_rate": newPatient.heart_rate
-        
-          
+          "first_name":newPatient.firstName,
+          "last_name":newPatient.lastName,
+          "email":newPatient.email,
+          "phone":newPatient.phone,
+          "id_number":newPatient.id,
+          "doctor_id": doctor_id,
+          "weight":newPatient.weight,
+          "height":newPatient.height,
+          "password": "password",
+          "systolic": newPatient.systolic,
+          "diastolic": newPatient.diastolic,
+          "heart_rate": newPatient.heart_rate  
         };
-
+console.log("the body to", body)
          const endpoint ="add"
               let response = await call_post_api(endpoint,body,config)
               return resolve(response) ;

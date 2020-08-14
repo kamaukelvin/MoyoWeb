@@ -32,9 +32,10 @@ const DoctorContextProvider = (props) => {
     email:'',
     phone:'',
     weight:'',
-    bpReadings:'',
-    id:'',
     heart_rate:'',
+    id:'',
+    systolic:'',
+    diastolic:'',
     loading: false
 
   })
