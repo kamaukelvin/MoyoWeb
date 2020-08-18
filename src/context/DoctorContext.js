@@ -50,6 +50,7 @@ const DoctorContextProvider = (props) => {
 
   })
   const [patientData, setPatientData]= useState([])
+  const [individualUser, setIndividualUser]= useState("")
   const [show, setShow] = useState(false);
 
 // handle Input Changes
@@ -98,6 +99,22 @@ const DoctorContextProvider = (props) => {
       let doctor_resp = await (await api_srv).getIndividualDoctor(token,doctor_id);
      
       setDoctorInfo(doctor_resp);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      let error = await err;
+      console.log(error.message);
+    }
+  };
+
+  const fetchIndividualUser= async (patient_id) => {
+    setLoading(true);
+    try {
+      // get the token
+      let token = sessionStorage.getItem("token")
+      let individual_resp = await (await api_srv).getIndividualUser(token,patient_id);
+  
+      setIndividualUser(individual_resp );
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -163,7 +180,7 @@ const DoctorContextProvider = (props) => {
     setLoading(true);
     try {
       let patient_data_resp = await (await api_srv).getPatientData(token,patient_id);
-      console.log("the response from fetch data",patient_data_resp)
+     
      setPatientData(patient_data_resp)
       setLoading(false);
     } catch (err) {
@@ -190,7 +207,9 @@ const DoctorContextProvider = (props) => {
         createPatient,
         loading,
         patientData,
-        show, setShow
+        show, setShow,
+        fetchIndividualUser,
+        individualUser
       
       }}
     >

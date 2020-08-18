@@ -15,9 +15,11 @@ const PatientStats = (props) => {
   const {
     fetchPatientData,
     fetchIndividualDoc,
+    fetchIndividualUser,
     doctorInfo,
     patientData,
     show,
+    individualUser,
     loading
   } = context;
   const modalContext = useContext(ModalContext);
@@ -27,15 +29,23 @@ const PatientStats = (props) => {
   useEffect(() => {
     async function initialize() {
       await fetchIndividualDoc();
+      await  fetchIndividualUser(props.match.params.id)
       await fetchPatientData(
         sessionStorage.getItem("token"),
         props.match.params.id
       );
+     
     }
     initialize();
   }, []);
- console.log("the data",patientData)
+ console.log("the data",individualUser)
+ console.log("the patient data",patientData)
 
+
+//  let weight = individualUser.weight;
+//  let height = individualUser.height;
+
+//  let bmi = weight / Math.pow(height / 100, 2);
 
 
 
@@ -71,7 +81,7 @@ const PatientStats = (props) => {
               <div className="side-Prescriptions">
                 <img className="side-img mb-1" src="./img/pic.png" alt="" />
                 <h6>
-                  Patient {patientData.first_name} {patientData.last_name}
+                  Patient {individualUser.first_name} {individualUser.last_name}
                 </h6>
               </div>
               <div className="middle-part">
@@ -125,29 +135,7 @@ const PatientStats = (props) => {
           </div>
           {/* MAIN SECTION START */}
           <div className="col-md-10">
-          {patientData.length===0 && loading ? <p className="text-center pt-5">loading...</p>: patientData.length===0 && !loading ? <p className="text-center pt-5">No records to display...</p>:
-          patientData.map((record, i)=>{
-            let recordLen = patientData.length;
-            let weight = record.weight;
-            let height = record.height;
-          
-            let bmi = weight / Math.pow(height / 100, 2);
-          
-            function bmi_status(weight, height) {
-              let bmi = weight / height ** 2;
-          
-              if (bmi < 18.5) {
-                return "Underweight";
-              } else if (bmi < 25) {
-                return "Normal";
-              } else if (bmi < 30) {
-                return "Overweight";
-              } else {
-                return "Obese";
-              }
-            }
-            if (recordLen === i + 1) {
-              return(
+         
               <div className="tab-content" id="v-pills-tabContent">
               <div
                 className="tab-pane fade "
@@ -158,12 +146,15 @@ const PatientStats = (props) => {
                 <div className="prescription ml-5 mt-3">
                   <div className="records" style={{ width: "100%" }}>
                     <p className="font-weight-bold">
-                      Patients {patientData.first_name} {patientData.last_name}{" "}
+                      Patient {individualUser.first_name} {individualUser.last_name}{" "}
                       Records
                     </p>
                   </div>
                 </div>
                 <div className="container-x">
+                {patientData.length===0 && loading ? <p className="text-center pt-5">Loading data...</p>: patientData.length===0 && !loading ? <p className="text-center">No data currently...</p>:
+                    
+                      
                   <table className="table table-hover">
                     <thead>
                       <tr>
@@ -175,10 +166,10 @@ const PatientStats = (props) => {
                       </tr>
                     </thead>
                     <tbody>
-                    {patientData.lenght===0 && loading ? <p className="text-center pt-5">Loading data...</p>: patientData.lenght===0 && !loading ? <p className="text-center">No data currently...</p>:
-                      patientData.map((row,i)=>{
-                       
+                   
+                   {patientData.map((row,i)=>{
                         return(
+                       
                           <tr key={i}>
                           <td><Moment format="DD MMM YYYY" date={row.createdAt} /></td>                      
                           <td>
@@ -200,11 +191,12 @@ const PatientStats = (props) => {
                           </td>
                         </tr>
                         )
-                      })
-                    }
+                      })}
                  
                     </tbody>
                   </table>
+                    
+                    }
                 </div>
               </div>
               <div
@@ -238,6 +230,8 @@ const PatientStats = (props) => {
             
                 </div>
                 <ToastContainer />
+                {patientData.length===0 && loading ? <p className="text-center pt-5">Loading data...</p>: patientData.length===0 && !loading ? <p className="text-center">No data currently...</p>:
+              
                 <table className="table table-hover">
                   <thead>
                     <tr>
@@ -248,7 +242,7 @@ const PatientStats = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {patientData.map((presc)=>presc.prescription.map((rec,i)=>{
+                 { patientData.map((presc)=>presc.prescription.map((rec,i)=>{
                       return(
                         <tr key={i}>
                         <td>{}</td>
@@ -256,112 +250,167 @@ const PatientStats = (props) => {
                       <td>{rec.dosage}</td>
                         <td>{rec.duration}</td>
                       </tr>
+                   
                       )
 
-                    }))}
-                
+}))}
                   
                   </tbody>
                 </table>
+                }
               </div>
-              <div
-                className="tab-pane fade show active"
-                id="v-pills-dash"
-                role="tabpanel"
-                aria-labelledby="v-pills-dash-tab"
-              >
-                <div>
-                  <div className="profile ml-5 mt-3">
-                    <div className="records" style={{ width: "100%" }}>
-                      <h5>
-                        Patient{" "}
-                        <span className="font-weight-bold">
-                          <i>
-                            {patientData.first_name} {patientData.last_name}
-                          </i>
-                        </span>
-                      </h5>
+
+              {
+                individualUser==="" && loading?"Loading Data...": individualUser==="" && !loading?"No data to display":
+   <>
+              
+            
+                  <div
+                  className="tab-pane fade show active"
+                  id="v-pills-dash"
+                  role="tabpanel"
+                  aria-labelledby="v-pills-dash-tab"
+                >
+                  <div>
+                    <div className="profile ml-5 mt-3">
+                      <div className="records" style={{ width: "100%" }}>
+                        <h5>
+                          Patient{" "}
+                          <span className="font-weight-bold">
+                            <i>
+                              {individualUser.first_name} {individualUser.last_name}
+                            </i>
+                          </span>
+                        </h5>
+                      </div>
                     </div>
-                  </div>
-                  <div className="container-x">
-                    <div className="readings">
-                      <div className="row">
-                        <div className="col-md-3">
-                          <div className="container-left">
-                          <p className="pt-3 mb-1"><b>Heart Rate</b></p>
-                            <h3 className="text-center">
-                              {patientData.systolic_diastolic}
-                            </h3>
+                    <div className="container-x">
+                      <div className="readings">
+                        <div className="row">
+                          <div className="col-md-3">
+                            <div className="container-left">
+                            <p className="pt-3 mb-1"><b>Heart Rate</b></p>
+                              <h3 className="text-center">
+                                {individualUser.heart_rate}
+                              </h3>
+                            </div>
                           </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="container-left">
-                          <p className="pt-3 mb-1"><b>Blood Pressure</b></p>
-                            <p className="">
-                              Systolic rate:{" "}
-                              <span className="font-weight-bold">
-                                {record.heartrate === undefined ?null:record.heartrate.sys} 
-                              </span>
-                            </p>
-                            <p className="">
-                              Dystolic Rate:{" "}
-                              <span className="font-weight-bold">
-                              {record.heartrate === undefined ?null:record.heartrate.dia} 
-                              </span>
-                            </p>
+                          <div className="col-md-3">
+                            <div className="container-left">
+                            <p className="pt-3 mb-1"><b>Blood Pressure</b></p>
+                            {patientData.map((record,i)=>{
+                              let recordLen = patientData.length;
+                              if (recordLen === i + 1) {
+                             
+                              return(
+                              <div key={i}>
+                                <p className="">
+                                Systolic rate:{" "}
+                                <span className="font-weight-bold">
+                                  {record.heartrate === undefined ?null:record.heartrate.sys} 
+                                </span>
+                              </p>
+                              <p className="">
+                                Dystolic Rate:{" "}
+                                <span className="font-weight-bold">
+                                {record.heartrate === undefined ?null:record.heartrate.dia} 
+                                </span>
+                              </p>
+                              </div>
+                              )
+                              
+                            } else {
+                              // not last one
+                            }
+
+                            })}
+                            
+                            </div>
                           </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="container-left">
-                            <p className="pt-3 mb-1">
-                              Weight:{" "}
-                              <span className="font-weight-bold">
-                                {record.weight} kg
-                              </span>
-                            </p>
-                            <p className="mb-1">
+                          <div className="col-md-3">
+                            <div className="container-left">
+                            <p className="pt-2 mb-1 font-weight-bold">BMI</p>
+                            {patientData.map((record,i)=>{
+                              let recordLen = patientData.length;
+                              let bmi = record.weight / Math.pow(record.height / 100, 2);
+
+                              if (recordLen === i + 1) {
+                             
+                              return(
+                              <div key={i}>
+                                <p className="mb-1">
+                                Weight:{" "}
+                                <span className="font-weight-bold">
+                                  {record.weight} 
+                                </span>
+                              </p>
+                              <p className="mb-1">
                               Height:{" "}
-                              <span className="font-weight-bold">
-                                {record.height} cm
-                              </span>
-                            </p>
-                            <p className="mb-0 ">
-                              B M I:{" "}
-                              <span className="font-weight-bold">{bmi}</span>
-                            </p>
+                                <span className="font-weight-bold">
+                                {record.height} 
+                                </span>
+                              </p>
+                              
+                              <p className="mb-0 ">
+                                B M I:{" "}
+                                <span className="font-weight-bold">{Math.round((bmi + Number.EPSILON) * 100) / 100}</span>
+                              </p>
+                              </div>
+                              )
+                              
+                            } else {
+                              // not last one
+                            }
+
+                            })}
+                          
+                       
+                            </div>
                           </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="container-left">
-                            <p className="pt-3">BMI Status</p>
-                            <h5 className="text-center">underweight</h5>
+                          <div className="col-md-3">
+                            <div className="container-left">
+                              <p className="pt-3 font-weight-bold">BMI Status</p>
+                              {patientData.map((record,i)=>{
+                              let recordLen = patientData.length;
+                              let bmi = record.weight / Math.pow(record.height / 100, 2);
+
+                              if (recordLen === i + 1) {
+                             
+                              return(
+                                <>
+                              {(bmi < 18.5) ? <h5 className="text-center text-danger">Underweight</h5>: (bmi>= 18.5 && bmi<=25) ?
+                              <h5 className="text-center text-success">Normal</h5>:(bmi>=25 && bmi<=30)?<h5 className="text-center text-warning">Overweight</h5>:
+                              <h5 className="text-center text-danger">Obese</h5>}
+                              </>
+                              )
+                              
+                            } else {
+                              // not last one
+                            }
+
+                            })}
+                         </div>
                           </div>
                         </div>
                       </div>
+                        <div className="row">
+                          <div className="col-md-6">
+                          <BP/>
+                          </div>
+                          <div className="col-md-6">
+                          <HR/>
+                          </div>
+                        </div>
+                    
                     </div>
-                      <div className="row">
-                        <div className="col-md-6">
-                        <BP/>
-                        </div>
-                        <div className="col-md-6">
-                        <HR/>
-                        </div>
-                      </div>
-                  
                   </div>
                 </div>
-              </div>
+</>
+              }
+            
             </div>
-              )
-            } else {
-              // not last one
-            }
-
-          })
           
-         
        
-          }
             {/* FOOTER SECTION START */}
             <footer className="footer">
               <div>Email : naekuj@students.uonbi.ac.ke</div>

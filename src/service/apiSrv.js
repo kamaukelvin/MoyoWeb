@@ -204,6 +204,30 @@ function getPatientData (token,patient_id) {
   })
   }
 
+function getIndividualUser (token,patient_id) {
+    return new Promise( async function(resolve, reject) {
+        try {
+      
+          let config = {
+            headers: {
+             "Content-Type": "application/json",
+             "Authorization": `Bearer ${token}`
+           },
+         }
+         const endpoint =`users/${patient_id}`
+        
+              let response = await call_get_api(endpoint,config)
+              console.log("the response is",response)
+              return resolve(response) ;
+              
+            }
+           
+        catch (err) {
+         return reject(err)
+        }
+  })
+  }
+
 
 
 async function call_post_api (endpoint,body,config) {
@@ -261,5 +285,6 @@ async function call_get_api (endpoint,config) {
     getIndividualDoctor,
     getPatientData,
     addPrescription,
-    addPatient
+    addPatient,
+    getIndividualUser
   }
