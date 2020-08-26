@@ -177,8 +177,8 @@ const signout =()=>{
                       <tr>
                         <th>Date</th>
                         <th>Heart Rate</th>
-                        <th>Height (cm)</th>
-                        <th>Weight (kg)</th>
+                        {/* <th>Height (cm)</th>
+                        <th>Weight (kg)</th> */}
                         <th>Level</th>
                       </tr>
                     </thead>
@@ -193,8 +193,8 @@ const signout =()=>{
                         { row.heart_rate}
    
                           </td>
-                          <td>{row.height}</td>
-                          <td>{row.weight}</td>
+                          {/* <td>{row.height}</td>
+                          <td>{row.weight}</td> */}
                           <td>
 
                             {row === undefined ? null:
