@@ -6,18 +6,21 @@ import Moment from 'react-moment'
 
 
 
-const BP = () => {
+const BP = ({id}) => {
     const context = useContext(DoctorContext)
     const{patientData}=context
-   console.log("the data", patientData)
-  let xAxis=[]
-  let days = patientData.map((day)=>day.createdAt)
-  
-let sys = patientData.map((day)=>
-day.heartrate===undefined?0:
 
-day.heartrate.sys)
-let dia = patientData.map((day)=>day.heartrate===undefined?0:day.heartrate.dia)
+    const user = patientData.filter(user=>user.patient_id===id)
+
+  let days = user.map(day=>
+    day.createdAt
+    )
+  
+let sys = user.map((obj)=>
+obj.sys===undefined?0:
+
+obj.sys)
+let dia = user.map((obj)=>obj.dia===undefined?0:obj.dia)
 
     const data = {
         labels: days,

@@ -5,18 +5,23 @@ import {DoctorContext} from '../../context/DoctorContext'
 
 
 
-const HR = () => {
+const HR = ({id}) => {
   const context = useContext(DoctorContext)
   const{patientData}=context
- console.log("the data", patientData)
+  const user = patientData.filter(user=>user.patient_id===id)
 
-let days = patientData.map((day)=>day.createdAt)
 
-let sys = patientData.map((day)=>
-day.heartrate===undefined?0:
+let days = user.map((day)=>day.createdAt)
 
-day.heartrate.sys)
-let dia = patientData.map((day)=>day.heartrate===undefined?0:day.heartrate.dia)
+let heart_rate =user.map((obj)=>{
+
+  return(
+    obj.heart_rate
+  )
+
+})
+
+
 const data = {
   labels: days,
   datasets: [
@@ -39,7 +44,7 @@ const data = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40]
+      data: heart_rate
     }
   ]
 };

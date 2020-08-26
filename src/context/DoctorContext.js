@@ -52,7 +52,7 @@ const DoctorContextProvider = (props) => {
   const [patientData, setPatientData]= useState([])
   const [individualUser, setIndividualUser]= useState("")
   const [show, setShow] = useState(false);
-
+const [medication, setMedication]= useState([])
 // handle Input Changes
   function handlePatientChange(evt) {
     const value = evt.target.value;
@@ -176,12 +176,26 @@ const DoctorContextProvider = (props) => {
   };
 
 
-  const fetchPatientData = async (token,patient_id) => {
+  const fetchPatientData = async (token) => {
     setLoading(true);
     try {
-      let patient_data_resp = await (await api_srv).getPatientData(token,patient_id);
+      let patient_data_resp = await (await api_srv).getPatientData(token);
      
      setPatientData(patient_data_resp)
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      let error = await err;
+      console.log(error.message);
+    }
+  };
+
+  const fetchPrescriptions = async (token, id) => {
+    setLoading(true);
+    try {
+      let patient_medication = await (await api_srv).getPrescriptions(token, id);
+     
+      setMedication(patient_medication)
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -209,7 +223,8 @@ const DoctorContextProvider = (props) => {
         patientData,
         show, setShow,
         fetchIndividualUser,
-        individualUser
+        individualUser,
+        fetchPrescriptions,medication
       
       }}
     >

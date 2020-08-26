@@ -145,8 +145,6 @@ const AuthContextProvider = (props) => {
       });
       let error = await err;
       console.log("error is", JSON.stringify(error))
-      // console.log("error is", JSON.stringify(error.message))
-      // setAlert({ ...alert, message: error.message, variant: "danger" });
       setShowAlert(true);
     }
   };

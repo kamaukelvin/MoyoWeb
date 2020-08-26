@@ -20,7 +20,9 @@ const PatientStats = (props) => {
     patientData,
     show,
     individualUser,
-    loading
+    loading,
+    fetchPrescriptions,
+    medication
   } = context;
   const modalContext = useContext(ModalContext);
   const refModal = useRef();
@@ -32,15 +34,17 @@ const PatientStats = (props) => {
       await  fetchIndividualUser(props.match.params.id)
       await fetchPatientData(
         sessionStorage.getItem("token"),
-        props.match.params.id
+    
       );
+      await fetchPrescriptions(sessionStorage.getItem("token"),props.match.params.id)
      
     }
     initialize();
   }, []);
- console.log("the data",individualUser)
- console.log("the patient data",patientData)
 
+ const user = patientData.filter(user=>user.patient_id===props.match.params.id)
+
+ let bmi = individualUser.weight / Math.pow(individualUser.height / 100, 2)
 
 //  let weight = individualUser.weight;
 //  let height = individualUser.height;
@@ -154,8 +158,10 @@ const PatientStats = (props) => {
                 <div className="container-x">
                 {patientData.length===0 && loading ? <p className="text-center pt-5">Loading data...</p>: patientData.length===0 && !loading ? <p className="text-center">No data currently...</p>:
                     
-                      
+<>
+
                   <table className="table table-hover">
+ 
                     <thead>
                       <tr>
                         <th>Date</th>
@@ -167,24 +173,24 @@ const PatientStats = (props) => {
                     </thead>
                     <tbody>
                    
-                   {patientData.map((row,i)=>{
+                   {user.map((row,i)=>{
                         return(
                        
                           <tr key={i}>
                           <td><Moment format="DD MMM YYYY" date={row.createdAt} /></td>                      
                           <td>
-                        { row.heartrate === undefined ?null:  <p>Sys:<span className="pr-2 font-weight-bold">{row.heartrate.sys}</span>Dia: <span className="font-weight-bold">{row.heartrate.dia}</span></p>}
+                        { row.heart_rate}
    
                           </td>
                           <td>{row.height}</td>
                           <td>{row.weight}</td>
                           <td>
 
-                            {row.heartrate === undefined ? null:
-                            (row.heartrate.sys>=70 && row.heartrate.sys<=90) && (row.heartrate.dia>=90 && row.heartrate.dia<=60) ? <p className="text-info">LOW</p>:
-                            (row.heartrate.sys>=90 && row.heartrate.sys<=120) && (row.heartrate.dia>=60 && row.heartrate.dia<=80) ? <p className="text-success">NORMAL</p>:
-                            (row.heartrate.sys>=120 && row.heartrate.sys<=140) && (row.heartrate.dia>=80 && row.heartrate.dia<=90) ? <p className="text-warning">PRE-HIGH</p>:
-                            (row.heartrate.sys>=140 && row.heartrate.sys<=190) && (row.heartrate.dia>=90 && row.heartrate.dia<=100) ? <p className="text-danger">HIGH</p>: null
+                            {row === undefined ? null:
+                            (row.sys>=70 && row.sys<=90) && (row.dia>=90 && row.dia<=60) ? <p className="text-info">LOW</p>:
+                            (row.sys>=90 && row.sys<=120) && (row.dia>=60 && row.dia<=80) ? <p className="text-success">NORMAL</p>:
+                            (row.sys>=120 && row.sys<=140) && (row.dia>=80 && row.dia<=90) ? <p className="text-warning">PRE-HIGH</p>:
+                            (row.sys>=140 && row.sys<=190) && (row.dia>=90 && row.dia<=100) ? <p className="text-danger">HIGH</p>: null
 
                             
                             }
@@ -195,7 +201,7 @@ const PatientStats = (props) => {
                  
                     </tbody>
                   </table>
-                    
+                    </>
                     }
                 </div>
               </div>
@@ -230,7 +236,7 @@ const PatientStats = (props) => {
             
                 </div>
                 <ToastContainer />
-                {patientData.length===0 && loading ? <p className="text-center pt-5">Loading data...</p>: patientData.length===0 && !loading ? <p className="text-center">No data currently...</p>:
+                {medication.length===0 && loading ? <p className="text-center m-auto pt-5">Loading Prescriptions...</p>: medication.length===0 && !loading ? <p className="text-center">No data currently...</p>:
               
                 <table className="table table-hover">
                   <thead>
@@ -242,18 +248,24 @@ const PatientStats = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                 { patientData.map((presc)=>presc.prescription.map((rec,i)=>{
+                 { medication.map((rec,i)=>{
                       return(
                         <tr key={i}>
-                        <td>{}</td>
+                        <td>
+                        <Moment
+                            format="DD MMM YYYY"
+                            date={
+                              rec.createdAt
+                            }/>
+                          </td>
                       <td>{rec.name}</td>
-                      <td>{rec.dosage}</td>
+                      <td>{rec.dose}</td>
                         <td>{rec.duration}</td>
                       </tr>
                    
                       )
 
-}))}
+})}
                   
                   </tbody>
                 </table>
@@ -261,7 +273,7 @@ const PatientStats = (props) => {
               </div>
 
               {
-                individualUser==="" && loading?"Loading Data...": individualUser==="" && !loading?"No data to display":
+                individualUser==="" && loading?<p className="text-center m-auto pt-5">Loading Patient Data...</p>: individualUser==="" && !loading? <p className="text-center m-auto pt-5">No Data to display</p>:
    <>
               
             
@@ -287,67 +299,69 @@ const PatientStats = (props) => {
                     <div className="container-x">
                       <div className="readings">
                         <div className="row">
-                          <div className="col-md-3">
-                            <div className="container-left">
-                            <p className="pt-3 mb-1"><b>Heart Rate</b></p>
-                              <h3 className="text-center">
-                                {individualUser.heart_rate}
-                              </h3>
-                            </div>
-                          </div>
-                          <div className="col-md-3">
-                            <div className="container-left">
-                            <p className="pt-3 mb-1"><b>Blood Pressure</b></p>
-                            {patientData.map((record,i)=>{
-                              let recordLen = patientData.length;
-                              if (recordLen === i + 1) {
-                             
-                              return(
-                              <div key={i}>
-                                <p className="">
-                                Systolic rate:{" "}
-                                <span className="font-weight-bold">
-                                  {record.heartrate === undefined ?null:record.heartrate.sys} 
-                                </span>
-                              </p>
-                              <p className="">
-                                Dystolic Rate:{" "}
-                                <span className="font-weight-bold">
-                                {record.heartrate === undefined ?null:record.heartrate.dia} 
-                                </span>
-                              </p>
-                              </div>
-                              )
-                              
-                            } else {
-                              // not last one
-                            }
-
-                            })}
-                            
-                            </div>
-                          </div>
+                          {
+                           user.map((rec,i)=>{
+                             let recLength=user.length
+                             if (recLength === i + 1) {
+                               return(
+                                <>
+                                <div className="col-md-3">
+                                  <div className="container-left">
+                                  <p className="pt-3 mb-1"><b>Heart Rate</b></p>
+                                    <h3 className="text-center">
+                                      {rec.heart_rate}
+                                    </h3>
+                                  </div>
+                                </div>
+                                <div className="col-md-3">
+                                  <div className="container-left">
+                                  <p className="pt-3 mb-1"><b>Blood Pressure</b></p>
+                    
+                                    <div >
+                                      <p className="">
+                                      Systolic rate:{" "}
+                                      <span className="font-weight-bold">
+                                        {rec.sys} 
+                                      </span>
+                                    </p>
+                                    <p className="">
+                                      Dystolic Rate:{" "}
+                                      <span className="font-weight-bold">
+                                      {rec.dia} 
+                                      </span>
+                                    </p>
+                                    </div>
+              
+                                  
+                                  </div>
+                                </div>
+                                </>
+                               )
+                           }else{
+                             return null
+                           }
+                           
+                          })
+                         
+}
                           <div className="col-md-3">
                             <div className="container-left">
                             <p className="pt-2 mb-1 font-weight-bold">BMI</p>
-                            {patientData.map((record,i)=>{
-                              let recordLen = patientData.length;
-                              let bmi = record.weight / Math.pow(record.height / 100, 2);
-
-                              if (recordLen === i + 1) {
+                            {
                              
-                              return(
-                              <div key={i}>
+
+  
+                              <div >
                                 <p className="mb-1">
                                 Weight:{" "}
                                 <span className="font-weight-bold">
-                                  {record.weight} 
+                                  {individualUser.weight} 
                                 </span>
                               </p>
                               <p className="mb-1">
                               Height:{" "}
                                 <span className="font-weight-bold">
-                                {record.height} 
+                                {individualUser.height} 
                                 </span>
                               </p>
                               
@@ -356,13 +370,7 @@ const PatientStats = (props) => {
                                 <span className="font-weight-bold">{Math.round((bmi + Number.EPSILON) * 100) / 100}</span>
                               </p>
                               </div>
-                              )
-                              
-                            } else {
-                              // not last one
-                            }
-
-                            })}
+}
                           
                        
                             </div>
@@ -395,10 +403,10 @@ const PatientStats = (props) => {
                       </div>
                         <div className="row">
                           <div className="col-md-6">
-                          <BP/>
+                          <BP id={props.match.params.id}/>
                           </div>
                           <div className="col-md-6">
-                          <HR/>
+                          <HR id={props.match.params.id}/>
                           </div>
                         </div>
                     
