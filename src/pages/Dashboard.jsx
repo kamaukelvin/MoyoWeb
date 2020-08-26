@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useRef } from "react";
 import { DoctorContext } from "../context/DoctorContext";
 import { ModalContext } from "../context/ModalContext";
 import coder from "../assets/images/coder.jpg";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import AddPatient from "../components/modals/AddPatient";
 import { ToastContainer } from "react-toastify";
+import Logout from '../assets/images/logout.png'
 
 export default function Dashboard(props) {
   const context = useContext(DoctorContext);
@@ -19,6 +20,7 @@ export default function Dashboard(props) {
 
   const { setModalShow, modalShow, modalClose } = modalContext;
   const refModal = useRef();
+  const history = useHistory()
 
   const token = sessionStorage.getItem("token");
   useEffect(() => {
@@ -29,7 +31,11 @@ export default function Dashboard(props) {
     initialize();
   }, []);
 
-
+  const signout =()=>{
+    localStorage.clear()
+    history.push('/')
+  
+  }
   const handle_view_record = async (id) => {
     try {
       //  await view_quotation(id)
@@ -47,8 +53,10 @@ export default function Dashboard(props) {
             Moyoweb
           </Link>
         </div>
-        <div className="dash-header-links">
-          <i className="fa fa-bars" aria-hidden="true" />
+        <div>
+          <Link onClick={signout} >
+            <img src={Logout} alt="logout" style={{height:'20px', width:'20px', margin:'auto'}}/>
+            <small className="d-block font-weight-bold text-dark"> Sign Out</small></Link>
         </div>
       </header>
       <div className="row">
@@ -60,6 +68,7 @@ export default function Dashboard(props) {
             <div>
               <p>Dr {doctorInfo.name}</p>
             </div>
+     
           </div>
           <div className="settings">
             <ul>

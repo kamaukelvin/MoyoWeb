@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useRef } from "react";
 import logo from "../assets/images/logo.png";
 import pic from "../assets/images/pic.png";
+import Logout from "../assets/images/logout.png";
 import { DoctorContext } from "../context/DoctorContext";
 import { ModalContext } from "../context/ModalContext";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import AddPrescription from "../components/modals/AddPrescription";
 import { ToastContainer,cssTransition } from "react-toastify";
 import Moment from 'react-moment'
@@ -26,6 +27,7 @@ const PatientStats = (props) => {
   } = context;
   const modalContext = useContext(ModalContext);
   const refModal = useRef();
+  const history = useHistory()
 
   const { setModalShow, modalShow, modalClose } = modalContext;
   useEffect(() => {
@@ -51,7 +53,11 @@ const PatientStats = (props) => {
 
 //  let bmi = weight / Math.pow(height / 100, 2);
 
+const signout =()=>{
+  localStorage.clear()
+  history.push('/')
 
+}
 
 
   return (
@@ -74,6 +80,11 @@ const PatientStats = (props) => {
         <div>
           <img className="top-img pl-4" src={pic} alt="logo" />
           <h6>Dr {doctorInfo.name}</h6>
+        </div>
+        <div>
+          <Link onClick={signout} >
+            <img src={Logout} alt="logout" style={{height:'20px', width:'20px', margin:'auto'}}/>
+            <small className="d-block font-weight-bold text-dark"> Sign Out</small></Link>
         </div>
       </section>
       {/* TOP SECTION END */}
